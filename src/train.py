@@ -22,10 +22,10 @@ def to_tensor(data):
 
 def main():
     # Hyperparameters
-    T_values = [50, 100, 150]  # Number of boosting iterations
-    m_values = [2000, 3000, 5000]  # Vocabulary size
-    n_most_values = [20, 50]  # Most frequent words removed
-    k_rarest_values = [20, 50]  # Rarest words removed
+    T_values = [150]  # Number of boosting iterations
+    m_values = [3000]  # Vocabulary size
+    n_most_values = [50]  # Most frequent words removed
+    k_rarest_values = [50]  # Rarest words removed
 
     best_acc = 0
     best_params = {}
@@ -66,7 +66,7 @@ def main():
                     y_train = np.array(train_labels)
                     y_dev = np.array(dev_labels)
 
-                    # Convert and Move Data to GPU
+                    # Convert to PyTorch Tensors and Move Data to GPU
                     X_train = to_tensor(X_train)
                     y_train = to_tensor(y_train)
                     X_dev = to_tensor(X_dev)
