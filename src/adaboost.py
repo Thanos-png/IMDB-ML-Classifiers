@@ -26,13 +26,13 @@ class DecisionStump:
         return self.polarity * predictions
 
 
-def adaboost_train(X: np.ndarray, y: np.ndarray, T: int) -> list[DecisionStump]:
+def adaboost_train(X: np.ndarray, y: np.ndarray, T: int, verbose=True) -> list[DecisionStump]:
     """
     Trains an AdaBoost classifier for T iterations.
     At each iteration the algorithm selects (over all features and both polarities)
     the decision stump with the lowest weighted error.
     """
-    # "X" is a binary feature matrix of shape (n_texts, len(vocab))
+    # `X` is a binary feature matrix of shape (n_texts, len(vocab))
     n_samples, n_features = X.shape
     weights: torch.Tensor = torch.full((n_samples,), 1 / n_samples, device="cuda")
     # weights: np.ndarray = np.full(n_samples, 1/n_samples)
@@ -77,8 +77,9 @@ def adaboost_train(X: np.ndarray, y: np.ndarray, T: int) -> list[DecisionStump]:
         # weights /= np.sum(weights)
 
         stumps.append(best_stump)
-        print(f"Iteration {t+1}/{T}: feature {best_stump.feature_index}, polarity {best_stump.polarity}, "
-              f"error {best_error:.4f}, alpha {alpha:.4f}")
+        if verbose:
+            print(f"Iteration {t+1}/{T}: feature {best_stump.feature_index}, polarity {best_stump.polarity}, "
+                  f"error {best_error:.4f}, alpha {alpha:.4f}")
 
     return stumps
 
@@ -86,7 +87,7 @@ def adaboost_train(X: np.ndarray, y: np.ndarray, T: int) -> list[DecisionStump]:
 def adaboost_predict(X: np.ndarray, stumps: list[DecisionStump]) -> np.ndarray:
     """Makes predictions on X by combining the weighted votes of the decision stumps."""
 
-    # "X" is a binary feature matrix of shape (n_texts, len(vocab))
+    # `X` is a binary feature matrix of shape (n_texts, len(vocab))
     n_samples: int = X.shape[0]
     agg_predictions = torch.zeros(X.shape[0], device="cuda")
     # agg_predictions: np.ndarray = np.zeros(n_samples)

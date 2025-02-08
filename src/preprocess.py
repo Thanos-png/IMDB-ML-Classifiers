@@ -112,7 +112,7 @@ def vectorize_texts(texts: list[str], vocab: Dict[str, int]) -> np.ndarray:
     For each vocabulary word, the corresponding entry is 1 if the text contains the word,
     and 0 otherwise.
     """
-    # "X" is a binary feature matrix of shape (n_texts, len(vocab))
+    # `X` is a binary feature matrix of shape (n_texts, len(vocab))
     X: torch.Tensor = torch.zeros((len(texts), len(vocab)), dtype=torch.float32, device="cuda")
     # X: np.ndarray = np.zeros((len(texts), len(vocab)), dtype=int)
 

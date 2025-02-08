@@ -46,14 +46,29 @@ python src/train.py
 #### Hyperparameters used:
 | Parameter | Value | Description                   |
 | --------- | ----- | ----------------------------- |
-| `T`       | `150` | Number of AdaBoost iterations |
-| `m`       | `3000`| Vocabulary size               |
+| `T`       | `200` | Number of AdaBoost iterations |
+| `m`       | `5000`| Vocabulary size               |
 | `n_most`  | `50`  | Most frequent words removed   |
 | `k_rarest`| `50`  | Rarest words removed          |
 
 #### Expected output:
 ```
-Development Accuracy: 80.96%
+Loading training data...
+Loaded 25000 training examples.
+
+--- Training with T=200, m=5000, n_most=50, k_rarest=50 ---
+Building vocabulary...
+Vectorizing texts...
+Training AdaBoost classifier...
+(Iterations)
+Development Accuracy: 81.94%
+Model and vocabulary saved to ../results/adaboost_model.pkl and ../results/vocab.pkl
+
+Running learning curve experiment (evaluating for positive class)...
+(Table)
+
+--- Best Hyperparameters ---
+{'T': 200, 'm': 5000, 'n_most': 50, 'k_rarest': 50}
 ```
 
 ### Test the Model
@@ -67,7 +82,17 @@ python src/test.py
 
 #### Expected output:
 ```
-Test Accuracy: 81.61%
+Loading test data...
+Loaded 25000 test examples.
+Test Accuracy: 82.37%
+
+Evaluation Metrics on Test Data:
+Category   Precision  Recall     F1        
+Positive   0.8098     0.8462     0.8276    
+Negative   0.8390     0.8012     0.8197    
+
+Micro-averaged: Precision: 0.8237, Recall: 0.8237, F1: 0.8237
+Macro-averaged: Precision: 0.8244, Recall: 0.8237, F1: 0.8236
 ```
 
 ## 🛠️ Key Implementations
@@ -85,6 +110,16 @@ Test Accuracy: 81.61%
 - Weighted voting of multiple weak learners improves accuracy.
 
 ## 📈 Results & Analysis
+| Size  | Train Prec | Train Rec | Train F1 | Dev Prec | Dev Rec | Dev F1 |
+| ----- | ---------- | --------- | -------- | -------- | ------- | ------ |
+| 2000  | 0.8365     | 0.8797    | 0.8576   | 0.7699   | 0.8423  | 0.8045 |
+| 4000  | 0.8239     | 0.8600    | 0.8416   | 0.7815   | 0.8483  | 0.8135 |
+| 8000  | 0.8236     | 0.8395    | 0.8315   | 0.8048   | 0.8302  | 0.8173 |
+| 12000 | 0.8273     | 0.8429    | 0.8350   | 0.8048   | 0.8318  | 0.8181 |
+| 16000 | 0.8251     | 0.8437    | 0.8343   | 0.8050   | 0.8294  | 0.8170 |
+| 20000 | 0.8176     | 0.8528    | 0.8349   | 0.7992   | 0.8491  | 0.8234 |
+
+#### The visualizations are stored in the `results/plots` directory.
 
 ## 🏆 Credits & Acknowledgements
 - IMDB Dataset: [Stanford AI Lab](https://ai.stanford.edu/~amaas/data/sentiment/)
