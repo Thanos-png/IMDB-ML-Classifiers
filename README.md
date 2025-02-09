@@ -61,7 +61,9 @@ Building vocabulary...
 Vectorizing texts...
 Training AdaBoost classifier...
 (Iterations)
-Development Accuracy: 81.94%
+Development Accuracy: 82.60%
+Training Sklearn AdaBoost classifier...
+Sklearn AdaBoost Dev Accuracy: 80.90%
 Model and vocabulary saved to ../results/adaboost_model.pkl and ../results/vocab.pkl
 
 Running learning curve experiment (evaluating for positive class)...
@@ -118,6 +120,16 @@ Macro-averaged: Precision: 0.8244, Recall: 0.8237, F1: 0.8236
 | 12000 | 0.8273     | 0.8429    | 0.8350   | 0.8048   | 0.8318  | 0.8181 |
 | 16000 | 0.8251     | 0.8437    | 0.8343   | 0.8050   | 0.8294  | 0.8170 |
 | 20000 | 0.8176     | 0.8528    | 0.8349   | 0.7992   | 0.8491  | 0.8234 |
+
+### Custom vs Sklearn adaBoost comparison
+| Size  | Custom Train F1 | Custom Dev F1 | Sklearn Train F1 | Sklearn Dev F1 |
+| ----- | --------------- | ------------- | ---------------- | -------------- |
+| 2000  | 0.8564          | 0.8067        | 0.8483           | 0.7970         |
+| 4000  | 0.8515          | 0.8137        | 0.8331           | 0.8068         |
+| 8000  | 0.8378          | 0.8160        | 0.8272           | 0.8092         |
+| 12000 | 0.8334          | 0.8191        | 0.8205           | 0.8081         |
+| 16000 | 0.8320          | 0.8189        | 0.8196           | 0.8115         |
+| 20000 | 0.8327          | 0.8272        | 0.8190           | 0.8132         |
 
 #### The visualizations are stored in the `results/plots` directory.
 

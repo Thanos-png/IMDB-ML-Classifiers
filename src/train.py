@@ -12,6 +12,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import precision_score, recall_score, f1_score
 
 
+# For reproducibility
 SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
@@ -51,12 +52,32 @@ def compute_metrics_for_class_sklearn(y_true, y_pred, target=1):
     return precision, recall, f1
 
 
-def plot_learning_curve(train_sizes, custom_train_f1, custom_dev_f1, sklearn_train_f1, sklearn_dev_f1):
+def plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec, dev_rec, dev_f1):
+    """Plots precision, recall, and F1-score for train and dev sets as training size increases."""
+
+    plt.figure(figsize=(10, 6))
+    
+    plt.plot(train_sizes, train_f1, marker='o', linestyle='-', label="Train F1-score", color='blue')
+    plt.plot(train_sizes, dev_f1, marker='s', linestyle='-', label="Dev F1-score", color='green')
+    plt.plot(train_sizes, train_prec, marker='^', linestyle='-', label="Train Precision", color='red')
+    plt.plot(train_sizes, dev_prec, marker='v', linestyle='-', label="Dev Precision", color='orange')
+    plt.plot(train_sizes, train_rec, marker='d', linestyle='-', label="Train Recall", color='purple')
+    plt.plot(train_sizes, dev_rec, marker='x', linestyle='-', label="Dev Recall", color='brown')
+    
+    plt.xlabel("Training Set Size")
+    plt.ylabel("Score")
+    plt.title("Learning Curve: Train vs Dev Metrics")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+
+def plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklearn_dev_f1):
     """Plots F1-score learning curves for both Custom and Sklearn AdaBoost."""
 
     plt.figure(figsize=(10, 6))
-    plt.plot(train_sizes, custom_train_f1, marker='o', linestyle='-', label="Custom Train F1", color='blue')
-    plt.plot(train_sizes, custom_dev_f1, marker='s', linestyle='-', label="Custom Dev F1", color='green')
+    plt.plot(train_sizes, train_f1, marker='o', linestyle='-', label="Custom Train F1", color='blue')
+    plt.plot(train_sizes, dev_f1, marker='s', linestyle='-', label="Custom Dev F1", color='green')
     plt.plot(train_sizes, sklearn_train_f1, marker='^', linestyle='--', label="Sklearn Train F1", color='red')
     plt.plot(train_sizes, sklearn_dev_f1, marker='v', linestyle='--', label="Sklearn Dev F1", color='orange')
     plt.xlabel("Training Set Size")
@@ -65,26 +86,6 @@ def plot_learning_curve(train_sizes, custom_train_f1, custom_dev_f1, sklearn_tra
     plt.legend()
     plt.grid(True)
     plt.show()
-
-
-# def plot_learning_curve(train_sizes, train_prec, train_rec, train_f1, dev_prec, dev_rec, dev_f1):
-#     """Plots precision, recall, and F1-score for train and dev sets as training size increases."""
-# 
-#     plt.figure(figsize=(10, 6))
-#     
-#     plt.plot(train_sizes, train_f1, marker='o', linestyle='-', label="Train F1-score", color='blue')
-#     plt.plot(train_sizes, dev_f1, marker='s', linestyle='-', label="Dev F1-score", color='green')
-#     plt.plot(train_sizes, train_prec, marker='^', linestyle='-', label="Train Precision", color='red')
-#     plt.plot(train_sizes, dev_prec, marker='v', linestyle='-', label="Dev Precision", color='orange')
-#     plt.plot(train_sizes, train_rec, marker='d', linestyle='-', label="Train Recall", color='purple')
-#     plt.plot(train_sizes, dev_rec, marker='x', linestyle='-', label="Dev Recall", color='brown')
-#     
-#     plt.xlabel("Training Set Size")
-#     plt.ylabel("Score")
-#     plt.title("Learning Curve: Train vs Dev Metrics")
-#     plt.legend()
-#     plt.grid(True)
-#     plt.show()
 
 
 def main():
@@ -186,10 +187,11 @@ def main():
                         dev_prec, dev_rec, dev_f1 = [], [], []
                         sklearn_train_f1, sklearn_dev_f1 = [], []
 
-                        print("{:<10} {:<20} {:<20} {:<20} {:<20}".format(
-                            "Size", "Custom Train F1", "Custom Dev F1", "Sklearn Train F1", "Sklearn Dev F1"))
-                        # print("{:<10} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15}".format(
-                        #     "Size", "Train Prec", "Train Rec", "Train F1", "Dev Prec", "Dev Rec", "Dev F1"))
+                        # Print header for Part A
+                        # print("{:<10} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15}".format("Size", "Train Prec", "Train Rec", "Train F1", "Dev Prec", "Dev Rec", "Dev F1"))
+
+                        # Print header for Part B
+                        print("{:<10} {:<20} {:<20} {:<20} {:<20}".format("Size", "Custom Train F1", "Custom Dev F1", "Sklearn Train F1", "Sklearn Dev F1"))
 
                         # For reproducibility, we use the first N examples of the (already shuffled) training data.
                         for frac in fractions:
@@ -222,10 +224,11 @@ def main():
                             prec_train_sklearn, rec_train_sklearn, f1_train_sklearn = compute_metrics_for_class_sklearn(sub_train_labels.cpu().numpy(), sklearn_train_preds, target=1)
                             prec_dev_sklearn, rec_dev_sklearn, f1_dev_sklearn = compute_metrics_for_class_sklearn(y_dev.cpu().numpy(), sklearn_dev_preds_subset, target=1)
 
-                            print("{:<10} {:<20.4f} {:<20.4f} {:<20.4f} {:<20.4f}".format(
-                                subset_size, f1_train, f1_dev, f1_train_sklearn, f1_dev_sklearn))
-                            # print("{:<10} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f}".format(
-                            #     subset_size, prec_train, rec_train, f1_train, prec_dev, rec_dev, f1_dev))
+                            # Print results for Part A
+                            # print("{:<10} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f}".format(subset_size, prec_train, rec_train, f1_train, prec_dev, rec_dev, f1_dev))
+
+                            # Print results for Part B
+                            print("{:<10} {:<20.4f} {:<20.4f} {:<20.4f} {:<20.4f}".format(subset_size, f1_train, f1_dev, f1_train_sklearn, f1_dev_sklearn))
 
                             train_sizes.append(subset_size)
                             train_prec.append(prec_train)
@@ -238,8 +241,8 @@ def main():
                             sklearn_dev_f1.append(f1_dev_sklearn)
 
                         # Plot learning curve
-                        plot_learning_curve(train_sizes, custom_train_f1, custom_dev_f1, sklearn_train_f1, sklearn_dev_f1)
-                        # plot_learning_curve(train_sizes, train_prec, train_rec, train_f1, dev_prec, dev_rec, dev_f1)
+                        # plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec, dev_rec, dev_f1)
+                        plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklearn_dev_f1)
 
     print("\n--- Best Hyperparameters ---")
     print(best_params)
