@@ -21,6 +21,7 @@ Before running the code, **ensure the dataset is downloaded and placed in `data/
 Clone this repository:
 ```
 git clone https://github.com/Thanos-png/AdaboostTextClassifier.git
+cd AdaboostTextClassifier
 pip install -r requirements.txt
 ```
 
