@@ -1,4 +1,5 @@
 import os
+import random
 import pickle
 import numpy as np
 import torch
@@ -11,6 +12,13 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import precision_score, recall_score, f1_score
 
 
+# For reproducibility
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+
+# Convert data to PyTorch tensor and move to GPU
 def to_tensor(data):
     """Converts NumPy arrays to PyTorch tensors and moves to GPU if available."""
 
@@ -156,11 +164,19 @@ def main():
     # For Sklearn AdaBoost, retrain on the full training data
     print("Training Sklearn AdaBoost classifier on full training data...")
     texts_train, labels_train = load_imdb_data(split='train', root='../data/aclImdb')
+    
     X_train_np = vectorize_texts(texts_train, vocab)
     y_train_np = np.array(labels_train)
+
+    # Move to CPU if using PyTorch Tensors
+    if isinstance(X_train_np, torch.Tensor):
+        X_train_np = X_train_np.cpu().numpy()
+    if isinstance(y_train_np, torch.Tensor):
+        y_train_np = y_train_np.cpu().numpy()
+
     sklearn_model = AdaBoostClassifier(
-        base_estimator=DecisionTreeClassifier(max_depth=1),
-        n_estimators=T,
+        estimator=DecisionTreeClassifier(max_depth=1),
+        n_estimators=200,
         algorithm='SAMME',
         random_state=SEED
     )

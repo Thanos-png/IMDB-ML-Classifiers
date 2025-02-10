@@ -153,7 +153,7 @@ def main():
                     # Train Sklearn AdaBoost
                     print("Training Sklearn AdaBoost classifier...")
                     sklearn_model = AdaBoostClassifier(
-                        base_estimator=DecisionTreeClassifier(max_depth=1),
+                        estimator=DecisionTreeClassifier(max_depth=1),
                         n_estimators=T,
                         algorithm='SAMME',
                         random_state=SEED
@@ -213,7 +213,7 @@ def main():
 
                             # Sklearn AdaBoost on subset
                             sklearn_model_subset = AdaBoostClassifier(
-                                base_estimator=DecisionTreeClassifier(max_depth=1),
+                                estimator=DecisionTreeClassifier(max_depth=1),
                                 n_estimators=T,
                                 algorithm='SAMME',
                                 random_state=SEED
