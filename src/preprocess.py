@@ -27,7 +27,7 @@ def load_imdb_data(split='train', root='../data') -> Tuple[list[str], list[int]]
 
         for filename in os.listdir(sentiment_path):
             file_path: str = os.path.join(sentiment_path, filename)
-            with open(file_path, 'r', encoding='utf-8') as file:
+            with open(filepath, "r", encoding="utf-8", errors="ignore") as file:
                 texts.append(file.read().strip())
                 labels.append(label)
 
