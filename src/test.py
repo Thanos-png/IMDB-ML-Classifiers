@@ -177,7 +177,6 @@ def main():
     sklearn_model = AdaBoostClassifier(
         estimator=DecisionTreeClassifier(max_depth=1),
         n_estimators=200,
-        algorithm='SAMME',
         random_state=SEED
     )
     sklearn_model.fit(X_train_np, y_train_np)

@@ -35,7 +35,8 @@ If `False` check your CUDA installation or use CPU.
 ## Running the Project
 ### Train the AdaBoost Model
 ```
-python src/train.py
+cd src/
+python train.py
 ```
 #### This will:
 - Load and preprocess the IMDB dataset.
@@ -75,7 +76,8 @@ Running learning curve experiment (evaluating for positive class)...
 
 ### Test the Model
 ```
-python src/test.py
+cd src/
+python test.py
 ```
 #### This will:
 - Load the **trained model** and **vocabulary**.
