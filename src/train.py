@@ -158,6 +158,14 @@ def main():
                         random_state=SEED
                     )
                     sklearn_model.fit(X_train.cpu().numpy(), y_train.cpu().numpy())
+
+                    # Save Sklearn AdaBoost Model
+                    sklearn_model_path = os.path.join(results_dir, 'sklearn_adaboost.pkl')
+                    with open(sklearn_model_path, 'wb') as f:
+                        pickle.dump(sklearn_model, f)
+                    print(f"Sklearn AdaBoost model saved to {sklearn_model_path}")
+
+                    # Evaluate on the Development Set
                     sklearn_dev_preds = sklearn_model.predict(X_dev.cpu().numpy())
                     sklearn_dev_acc = np.mean(sklearn_dev_preds == y_dev.cpu().numpy())
                     print(f"Sklearn AdaBoost Dev Accuracy: {sklearn_dev_acc * 100:.2f}%")
