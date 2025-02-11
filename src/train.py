@@ -69,7 +69,12 @@ def plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec
     plt.title("Learning Curve: Train vs Dev Metrics")
     plt.legend()
     plt.grid(True)
-    save_plot("test-1.png")
+    
+    plots_dir = os.path.join('..', 'results', 'plots')
+    os.makedirs(plots_dir, exist_ok=True)
+    plt.savefig(os.path.join(plots_dir, "train-1.png"))
+    print(f"Plot saved at {os.path.join(plots_dir, "train-1.png")}")
+
     plt.show()
 
 
@@ -86,7 +91,12 @@ def plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklea
     plt.title("Learning Curve: Custom vs Sklearn AdaBoost (Positive Class)")
     plt.legend()
     plt.grid(True)
-    save_plot("test-2.png")
+
+    plots_dir = os.path.join('..', 'results', 'plots')
+    os.makedirs(plots_dir, exist_ok=True)
+    plt.savefig(os.path.join(plots_dir, "train-2.png"))
+    print(f"Plot saved at {os.path.join(plots_dir, "train-2.png")}")
+
     plt.show()
 
 

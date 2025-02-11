@@ -70,7 +70,12 @@ def plot_test_results_A(categories, precision, recall, f1):
     plt.xticks(x, categories)
     plt.legend()
     plt.grid(axis='y')
-    save_plot("test-1.png")
+    
+    plots_dir = os.path.join('..', 'results', 'plots')
+    os.makedirs(plots_dir, exist_ok=True)
+    plt.savefig(os.path.join(plots_dir, "test-1.png"))
+    print(f"Plot saved at {os.path.join(plots_dir, "test-1.png")}")
+
     plt.show()
 
 
@@ -97,7 +102,12 @@ def plot_test_results_B(categories, prec_values, rec_values, f1_values, sklearn_
     plt.xticks(x, categories)
     plt.legend()
     plt.grid(axis='y')
-    save_plot("test-2.png")
+    
+    plots_dir = os.path.join('..', 'results', 'plots')
+    os.makedirs(plots_dir, exist_ok=True)
+    plt.savefig(os.path.join(plots_dir, "test-2.png"))
+    print(f"Plot saved at {os.path.join(plots_dir, "test-2.png")}")
+
     plt.show()
 
 
