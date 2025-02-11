@@ -117,8 +117,8 @@ def main():
     y_test_np = np.array(labels)
 
     # Convert to PyTorch Tensors and Move Data to GPU
-    X_test = to_tensor(X_test)
-    y_test = to_tensor(y_test)
+    X_test = to_tensor(X_test_np)
+    y_test = to_tensor(y_test_np)
 
     # Evaluate
     preds = adaboost_predict(X_test, stumps)
