@@ -69,6 +69,7 @@ def plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec
     plt.title("Learning Curve: Train vs Dev Metrics")
     plt.legend()
     plt.grid(True)
+    save_plot("test-1.png")
     plt.show()
 
 
@@ -85,6 +86,7 @@ def plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklea
     plt.title("Learning Curve: Custom vs Sklearn AdaBoost (Positive Class)")
     plt.legend()
     plt.grid(True)
+    save_plot("test-2.png")
     plt.show()
 
 
@@ -141,7 +143,7 @@ def main():
                     y_dev = to_tensor(y_dev)
 
                     # Train AdaBoost Classifier
-                    print("\nTraining AdaBoost classifier...")
+                    print("Training AdaBoost classifier...")
                     stumps = adaboost_train(X_train, y_train, T)
 
                     # Evaluate on the Development Set
@@ -151,7 +153,7 @@ def main():
                     print(f"Development Accuracy: {dev_acc * 100:.2f}%")
 
                     # Train Sklearn AdaBoost
-                    print("Training Sklearn AdaBoost classifier...")
+                    print("\nTraining Sklearn AdaBoost classifier...")
                     sklearn_model = AdaBoostClassifier(
                         estimator=DecisionTreeClassifier(max_depth=1),
                         n_estimators=T,

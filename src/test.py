@@ -70,6 +70,7 @@ def plot_test_results_A(categories, precision, recall, f1):
     plt.xticks(x, categories)
     plt.legend()
     plt.grid(axis='y')
+    save_plot("test-1.png")
     plt.show()
 
 
@@ -96,6 +97,7 @@ def plot_test_results_B(categories, prec_values, rec_values, f1_values, sklearn_
     plt.xticks(x, categories)
     plt.legend()
     plt.grid(axis='y')
+    save_plot("test-2.png")
     plt.show()
 
 
@@ -165,7 +167,7 @@ def main():
     sklearn_model_path = os.path.join(results_dir, 'sklearn_adaboost.pkl')
     with open(sklearn_model_path, 'rb') as f:
         sklearn_model = pickle.load(f)
-    print(f"Loaded trained Sklearn AdaBoost model from {sklearn_model_path}")
+    print(f"\nLoaded trained Sklearn AdaBoost model from {sklearn_model_path}")
 
     # Move tensors to CPU before converting to NumPy
     if isinstance(X_test_np, torch.Tensor):

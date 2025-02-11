@@ -90,13 +90,24 @@ Loading test data...
 Loaded 25000 test examples.
 Test Accuracy: 82.37%
 
-Evaluation Metrics on Test Data:
+Loaded trained Sklearn AdaBoost model from ../results/sklearn_adaboost.pkl
+Sklearn AdaBoost Test Accuracy: 81.59%
+
+Custom AdaBoost Test Evaluation Metrics:
 Category   Precision  Recall     F1        
 Positive   0.8098     0.8462     0.8276    
 Negative   0.8390     0.8012     0.8197    
 
-Micro-averaged: Precision: 0.8237, Recall: 0.8237, F1: 0.8237
-Macro-averaged: Precision: 0.8244, Recall: 0.8237, F1: 0.8236
+Sklearn AdaBoost Test Evaluation Metrics:
+Category   Precision  Recall     F1        
+Positive   0.8002     0.8420     0.8206    
+Negative   0.8333     0.7898     0.8109    
+
+Custom AdaBoost Micro-averaged: Precision: 0.8237, Recall: 0.8237, F1: 0.8237
+Custom AdaBoost Macro-averaged: Precision: 0.8244, Recall: 0.8237, F1: 0.8236
+
+Sklearn AdaBoost Micro-averaged: Precision: 0.8159, Recall: 0.8159, F1: 0.8159
+Sklearn AdaBoost Macro-averaged: Precision: 0.8167, Recall: 0.8159, F1: 0.8158
 ```
 
 ## 🛠️ Key Implementations
