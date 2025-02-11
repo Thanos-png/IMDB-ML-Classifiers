@@ -141,7 +141,7 @@ def main():
                     y_dev = to_tensor(y_dev)
 
                     # Train AdaBoost Classifier
-                    print("Training AdaBoost classifier...")
+                    print("\nTraining AdaBoost classifier...")
                     stumps = adaboost_train(X_train, y_train, T)
 
                     # Evaluate on the Development Set
@@ -160,6 +160,7 @@ def main():
                     sklearn_model.fit(X_train.cpu().numpy(), y_train.cpu().numpy())
 
                     # Save Sklearn AdaBoost Model
+                    results_dir = os.path.join('..', 'results')
                     sklearn_model_path = os.path.join(results_dir, 'sklearn_adaboost.pkl')
                     with open(sklearn_model_path, 'wb') as f:
                         pickle.dump(sklearn_model, f)
@@ -175,7 +176,6 @@ def main():
                         best_params = {'T': T, 'm': m, 'n_most': n_most, 'k_rarest': k_rarest}
 
                         # Save the Model and Vocabulary
-                        results_dir = os.path.join('..', 'results')
                         os.makedirs(results_dir, exist_ok=True)
                         model_path = os.path.join(results_dir, 'adaboost_model.pkl')
                         vocab_path = os.path.join(results_dir, 'vocab.pkl')
@@ -222,7 +222,6 @@ def main():
                             sklearn_model_subset = AdaBoostClassifier(
                                 estimator=DecisionTreeClassifier(max_depth=1),
                                 n_estimators=T,
-                                algorithm='SAMME',
                                 random_state=SEED
                             )
                             sklearn_model_subset.fit(X_sub_train.cpu().numpy(), sub_train_labels.cpu().numpy())
