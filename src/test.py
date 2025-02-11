@@ -167,6 +167,12 @@ def main():
         sklearn_model = pickle.load(f)
     print(f"Loaded trained Sklearn AdaBoost model from {sklearn_model_path}")
 
+    # Move tensors to CPU before converting to NumPy
+    if isinstance(X_test_np, torch.Tensor):
+        X_test_np = X_test_np.cpu().numpy()
+    if isinstance(y_test_np, torch.Tensor):
+        y_test_np = y_test_np.cpu().numpy()
+
     sklearn_model.fit(X_test_np, y_test_np)
     sklearn_test_preds = sklearn_model.predict(X_test_np)
     sklearn_acc = np.mean(sklearn_test_preds == y_test_np)
