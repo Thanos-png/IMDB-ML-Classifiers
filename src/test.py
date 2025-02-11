@@ -57,7 +57,7 @@ def plot_test_results_A(categories, precision, recall, f1):
     """Plots precision, recall, and F1-score for test evaluation."""
 
     x = np.arange(len(categories))
-    width = 0.25  # Bar width
+    width = 0.25
     
     plt.figure(figsize=(8, 5))
     plt.bar(x - width, precision, width, label='Precision', color='blue')
@@ -84,24 +84,25 @@ def plot_test_results_B(categories, prec_values, rec_values, f1_values, sklearn_
     """Plots bar charts of precision, recall, and F1 for test evaluation for both implementations."""
 
     x = np.arange(len(categories))
-    width = 0.35
+    width = 0.14
 
     plt.figure(figsize=(10, 6))
-    # Custom bars (left side)
-    plt.bar(x - width/2, prec_values, width, label='Custom Precision', color='blue')
-    plt.bar(x - width/2, rec_values, width, bottom=prec_values, label='Custom Recall', color='green', alpha=0.7)
-    plt.bar(x - width/2, f1_values, width, bottom=np.array(prec_values)+np.array(rec_values), label='Custom F1', color='red', alpha=0.7)
+    # Custom Model Bars
+    plt.bar(x - 2 * width, prec_values, width, label='Custom Precision', color='blue')
+    plt.bar(x - width, rec_values, width, label='Custom Recall', color='green')
+    plt.bar(x, f1_values, width, label='Custom F1', color='red')
 
-    # Sklearn bars (right side)
-    plt.bar(x + width/2, sklearn_precs, width, label='Sklearn Precision', color='cyan')
-    plt.bar(x + width/2, sklearn_recs, width, bottom=sklearn_precs, label='Sklearn Recall', color='magenta', alpha=0.7)
-    plt.bar(x + width/2, sklearn_f1s, width, bottom=np.array(sklearn_precs)+np.array(sklearn_recs), label='Sklearn F1', color='yellow', alpha=0.7)
+    # Sklearn Model Bars
+    plt.bar(x + width, sklearn_precs, width, label='Sklearn Precision', color='cyan')
+    plt.bar(x + 2 * width, sklearn_recs, width, label='Sklearn Recall', color='magenta')
+    plt.bar(x + 3 * width, sklearn_f1s, width, label='Sklearn F1', color='yellow')
 
     plt.xlabel("Categories")
     plt.ylabel("Score")
     plt.title("Test Evaluation Metrics: Custom vs Sklearn AdaBoost")
     plt.xticks(x, categories)
-    plt.legend()
+    plt.ylim(0, 1)
+    plt.legend(loc="lower right")
     plt.grid(axis='y')
 
     # Save the plot
