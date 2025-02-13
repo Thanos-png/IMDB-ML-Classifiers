@@ -14,8 +14,11 @@ def tokenize(text) -> list[str]:
     return re.findall(r'\b\w+\b', text.lower())
 
 
-def load_imdb_data(split='train', root='../data') -> Tuple[list[str], list[int]]:
+def load_imdb_data(split='train', root='') -> Tuple[list[str], list[int]]:
     """Loads the IMDB dataset using TorchText."""
+
+    if !root:
+        root = os.path.join('..', 'data', 'aclImdb')
 
     data_path: str = os.path.join(root, split)
     texts: list[str] = []  # A list of the movie reviews
