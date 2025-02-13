@@ -126,12 +126,13 @@ def main():
 
     # Load and Vectorize Test Data
     print("Loading test data...")
-    texts, labels = load_imdb_data(split='test', root='../data/aclImdb')
+    root = os.path.join("..", "data", "aclImdb")
+    texts, labels = load_imdb_data(split='test', root=root)
     print(f"Loaded {len(texts)} test examples.")
     X_test_np = vectorize_texts(texts, vocab)
     y_test_np = np.array(labels)
 
-    # Convert to PyTorch Tensors and Move Data to GPU
+    # Convert to PyTorch Tensors and Move Data to GPU if available
     X_test = to_tensor(X_test_np)
     y_test = to_tensor(y_test_np)
 
@@ -170,9 +171,6 @@ def main():
     
     # Print the Evaluation Results (A)
     # print("\nEvaluation Metrics on Test Data:")
-    # print("{:<10} {:<10} {:<10} {:<10}".format("Category", "Precision", "Recall", "F1"))
-    # print("{:<10} {:<10.4f} {:<10.4f} {:<10.4f}".format("Positive", prec_pos, rec_pos, f1_pos))
-    # print("{:<10} {:<10.4f} {:<10.4f} {:<10.4f}".format("Negative", prec_neg, rec_neg, f1_neg))
     # print("\nMicro-averaged: Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}".format(micro_prec, micro_rec, micro_f1))
     # print("Macro-averaged: Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}".format(macro_prec, macro_rec, macro_f1))
 

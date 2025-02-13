@@ -22,9 +22,10 @@ torch.manual_seed(SEED)
 def to_tensor(data):
     """Converts NumPy arrays to PyTorch tensors and moves to GPU."""
 
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if isinstance(data, torch.Tensor):  # If already tensor, just move to GPU
-        return data.to("cuda")
-    return torch.tensor(data, dtype=torch.float32, device="cuda")
+        return data.to(device)
+    return torch.tensor(data, dtype=torch.float32, device=device)
 
 
 def compute_metrics_for_class_torch(y_true, y_pred, target=1):
@@ -114,7 +115,8 @@ def main():
 
     # Load Training Data
     print("Loading training data...")
-    texts, labels = load_imdb_data(split='train', root='../data/aclImdb')
+    root = os.path.join("..", "data", "aclImdb")
+    texts, labels = load_imdb_data(split='train', root=root)
     print(f"Loaded {len(texts)} training examples.")
 
     # Split into Training and Development Sets (80/20 split)
@@ -139,7 +141,6 @@ def main():
                     # Build Vocabulary from Training Data
                     print("Building vocabulary...")
                     vocab = build_vocabulary(train_texts, train_labels, n_most=n_most, k_rarest=k_rarest, m=m)
-                    # print(f"Vocabulary size: {len(vocab)}")
 
                     # Vectorize Texts
                     print("Vectorizing texts...")
@@ -148,7 +149,7 @@ def main():
                     y_train = np.array(train_labels)
                     y_dev = np.array(dev_labels)
 
-                    # Convert to PyTorch Tensors and Move Data to GPU
+                    # Convert to PyTorch Tensors and Move Data to GPU if available
                     X_train = to_tensor(X_train)
                     y_train = to_tensor(y_train)
                     X_dev = to_tensor(X_dev)
@@ -161,7 +162,6 @@ def main():
                     # Evaluate on the Development Set
                     dev_preds = adaboost_predict(X_dev, stumps)
                     dev_acc = torch.mean((dev_preds == y_dev).float())
-                    # dev_acc = np.mean(dev_preds == y_dev)
                     print(f"Development Accuracy: {dev_acc * 100:.2f}%")
 
                     # Train Sklearn AdaBoost

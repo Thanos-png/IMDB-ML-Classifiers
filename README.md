@@ -29,8 +29,7 @@ pip install -r requirements.txt
 ```
 python -c "import torch; print(torch.cuda.is_available())"
 ```
-If `True` your GPU is ready.
-If `False` check your CUDA installation or use CPU.
+If `True` your GPU is ready.If `False` check your CUDA installation or the CPU will be used automatically.
 
 ## Running the Project
 ### Train the AdaBoost Model
@@ -42,7 +41,7 @@ python train.py
 - Load and preprocess the IMDB dataset.
 - Construct a **vocabulary** by removing frequent/rare words and selecting words based on **information gain**.
 - Convert reviews into **binary feature vectors**.
-- Train an **AdaBoost classifier** with **T=150** boosting iterations.
+- Train an **AdaBoost classifier** with **T=200** boosting iterations.
 
 #### Hyperparameters used:
 | Parameter | Value | Description                   |

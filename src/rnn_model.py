@@ -35,9 +35,8 @@ class StackedBiRNN(nn.Module):
         self.fc = nn.Linear(hidden_dim * 2, num_classes)
 
     def forward(self, x):
-        """
-        x: LongTensor of shape [batch_size, seq_len] with token indices.
-        """
+        """x: LongTensor of shape [batch_size, seq_len] with token indices."""
+
         # Convert word indices to embeddings.
         embeds = self.embedding(x)  # [batch_size, seq_len, embedding_dim]
         # Pass through GRU.

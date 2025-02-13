@@ -106,15 +106,14 @@ def build_vocabulary(texts: list[str], labels: list[int], n_most=20, k_rarest=20
     return vocab
 
 
-def vectorize_texts(texts: list[str], vocab: Dict[str, int]) -> np.ndarray:
+def vectorize_texts(texts: list[str], vocab: Dict[str, int]) -> torch.Tensor:
     """
     Converts a list of texts into a binary feature matrix.
     For each vocabulary word, the corresponding entry is 1 if the text contains the word,
     and 0 otherwise.
     """
     # `X` is a binary feature matrix of shape (n_texts, len(vocab))
-    X: torch.Tensor = torch.zeros((len(texts), len(vocab)), dtype=torch.float32, device="cuda")
-    # X: np.ndarray = np.zeros((len(texts), len(vocab)), dtype=int)
+    X: torch.Tensor = torch.zeros((len(texts), len(vocab)), dtype=torch.float32, device="cuda" if torch.cuda.is_available() else "cpu")
 
     # Loop over each review
     for i, text in enumerate(texts):
