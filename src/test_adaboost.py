@@ -6,10 +6,10 @@ import torch
 import matplotlib.pyplot as plt
 from preprocess import load_imdb_data, vectorize_texts
 from adaboost import adaboost_predict
+from utils import to_tensor, compute_metrics_for_class_sklearn, compute_metrics_for_class_torch
 
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import precision_score, recall_score, f1_score
 
 
 # For reproducibility
@@ -17,40 +17,6 @@ SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
-
-# Convert data to PyTorch tensor and move to GPU
-def to_tensor(data):
-    """Converts NumPy arrays to PyTorch tensors and moves to GPU if available."""
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    if isinstance(data, torch.Tensor):  # If already tensor, just move to GPU
-        return data.to(device)
-    return torch.tensor(data, dtype=torch.float32, device=device)
-
-
-def compute_class_metrics_torch(y_true, y_pred, cls):
-    """Computes precision, recall, and F1 for a given class."""
-    
-    # Compute true positives, false positives, and false negatives
-    tp = torch.sum((y_true == cls) & (y_pred == cls)).item()
-    fp = torch.sum((y_true != cls) & (y_pred == cls)).item()
-    fn = torch.sum((y_true == cls) & (y_pred != cls)).item()
-
-    # Compute precision, recall, and F1
-    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
-
-    return precision, recall, f1
-
-
-def compute_class_metrics_sklearn(y_true, y_pred, cls):
-    """Computes precision, recall, and F1 for a given class using scikit-learn."""
-
-    precision = precision_score(y_true, y_pred, pos_label=cls, zero_division=0)
-    recall = recall_score(y_true, y_pred, pos_label=cls, zero_division=0)
-    f1 = f1_score(y_true, y_pred, pos_label=cls, zero_division=0)
-    return precision, recall, f1
 
 
 def plot_test_results_A(categories, precision, recall, f1):
@@ -227,6 +193,7 @@ def main():
     # Plot the results
     # plot_test_results_A(categories, prec_values, rec_values, f1_values)
     plot_test_results_B(categories, prec_values, rec_values, f1_values, sklearn_precs, sklearn_recs, sklearn_f1s)
+
 
 if __name__ == "__main__":
     main()

@@ -17,7 +17,7 @@ def tokenize(text) -> list[str]:
 def load_imdb_data(split='train', root='') -> Tuple[list[str], list[int]]:
     """Loads the IMDB dataset using TorchText."""
 
-    if !root:
+    if not root:
         root = os.path.join('..', 'data', 'aclImdb')
 
     data_path: str = os.path.join(root, split)

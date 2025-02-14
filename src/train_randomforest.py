@@ -5,17 +5,19 @@ import pickle
 import torch
 import matplotlib.pyplot as plt
 from preprocess import load_imdb_data, build_vocabulary, vectorize_texts
-from randomforest import randomforest_train,randomforest_predict
-from train_adaboost import to_tensor,compute_metrics_for_class_sklearn,compute_metrics_for_class_torch
+from randomforest import randomforest_train, randomforest_predict
+from utils import to_tensor, compute_metrics_for_class_sklearn, compute_metrics_for_class_torch
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score, recall_score, f1_score
+
 
 # For reproducibility
 SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
+
 
 def plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec, dev_rec, dev_f1):
     """
@@ -71,6 +73,7 @@ def plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklea
     print(f"Plot saved at {os.path.join(plots_dir, 'train_2_RF')}")
 
     plt.show()
+
 
 def main():
     # Hyperparameters
@@ -133,7 +136,7 @@ def main():
                     dev_preds_torch = torch.tensor(dev_preds, device="cuda")
                     dev_acc = torch.mean((dev_preds_torch == y_dev).float())
                     print(f"Development Accuracy: {dev_acc * 100:.2f}%")
-                    
+
                     # Train Sklearn Random Forest
                     print("\nTraining Sklearn AdaBoost classifier...")
                     sklearn_model = RandomForestClassifier(
@@ -156,7 +159,6 @@ def main():
                     sklearn_dev_preds = sklearn_model.predict(X_dev.cpu().numpy())
                     sklearn_dev_acc = np.mean(sklearn_dev_preds == y_dev.cpu().numpy())
                     print(f"Sklearn Random Forest Dev Accuracy: {sklearn_dev_acc * 100:.2f}%")
-                    
 
                     # Save the best model
                     if dev_acc > best_acc:
@@ -218,9 +220,6 @@ def main():
                             prec_train_sklearn, rec_train_sklearn, f1_train_sklearn = compute_metrics_for_class_sklearn(sub_train_labels.cpu().numpy(), sklearn_train_preds, target=1)
                             prec_dev_sklearn, rec_dev_sklearn, f1_dev_sklearn = compute_metrics_for_class_sklearn(y_dev.cpu().numpy(), sklearn_dev_preds_subset, target=1)
 
-
-
-
                             # Print results for Part A
                             # print("{:<10} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f}".format(subset_size, prec_train, rec_train, f1_train, prec_dev, rec_dev, f1_dev))
 
@@ -241,9 +240,9 @@ def main():
                         plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec, dev_rec, dev_f1)
                         plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklearn_dev_f1)
 
-
     print("\n--- Best Hyperparameters ---")
     print(best_params)
+
 
 if __name__ == "__main__":
     main()
