@@ -1,11 +1,10 @@
 # AdaBoost for Text Classification (IMDB Dataset)
 
-This project implements the **AdaBoost** algorithm with **decision stumps** to classify movie reviews into **positive** or **negative** opinions. The dataset used is the **Large Movie Review Dataset (IMDB Dataset)**.
+This project implements an **AdaBoost**, **Random Forest** and **Stacked Bidirectional RNN with GRU cells** classifiers to classify movie reviews into **positive** or **negative** opinions. The dataset used is the **Large Movie Review Dataset (IMDB Dataset)**.
 
 ## 🚀 Project Overview
 
 ### **Objective**
-- Implement **AdaBoost** using **decision stumps** as weak classifiers.
 - Represent text as **binary feature vectors**, where each feature corresponds to the presence (`1`) or absence (`0`) of a word in the review.
 - Construct a vocabulary by **removing the `n` most frequent and `k` rarest words** and selecting the **top `m` words with the highest information gain**.
 - Evaluate the classifier on a **subset of training data (development set)** and **test data**.
@@ -14,8 +13,6 @@ This project implements the **AdaBoost** algorithm with **decision stumps** to c
 #### This project uses the **IMDB Large Movie Review Dataset**, available at:
 - [Stanford AI IMDB Dataset](https://ai.stanford.edu/~amaas/data/sentiment/)
 - [PyTorch IMDB Dataset](https://pytorch.org/text/stable/datasets.html#imdb)
-
-Before running the code, **ensure the dataset is downloaded and placed in `data/aclImdb/`**.
 
 ## Installation
 Clone this repository:
@@ -35,7 +32,7 @@ If `True` your GPU is ready.If `False` check your CUDA installation or the CPU w
 ### Train the AdaBoost Model
 ```
 cd src/
-python train.py
+python train_adaboost.py
 ```
 #### This will:
 - Load and preprocess the IMDB dataset.
@@ -76,7 +73,7 @@ Running learning curve experiment (evaluating for positive class)...
 ### Test the Model
 ```
 cd src/
-python test.py
+python test_adaboost.py
 ```
 #### This will:
 - Load the **trained model** and **vocabulary**.
@@ -124,6 +121,7 @@ Sklearn AdaBoost Macro-averaged: Precision: 0.8167, Recall: 0.8159, F1: 0.8158
 - Weighted voting of multiple weak learners improves accuracy.
 
 ## 📈 Results & Analysis
+### Custom adaboost metrics
 | Size  | Train Prec | Train Rec | Train F1 | Dev Prec | Dev Rec | Dev F1 |
 | ----- | ---------- | --------- | -------- | -------- | ------- | ------ |
 | 2000  | 0.8365     | 0.8797    | 0.8576   | 0.7699   | 0.8423  | 0.8045 |
