@@ -71,8 +71,9 @@ def main():
     embedding_matrix = np.random.rand(len(vocab), embedding_dim)
 
     # Instantiate the model
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     model = StackedBiRNN(embedding_matrix, hidden_dim, num_layers, dropout, num_classes=2)
-    model.to("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
 
     # Define the optimizer and loss function
     optimizer = optim.Adam(model.parameters(), lr=lr)
