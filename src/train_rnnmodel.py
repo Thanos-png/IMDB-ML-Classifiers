@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.utils.data import TensorDataset, DataLoader
 from preprocess import load_imdb_data, build_vocabulary, vectorize_texts
 from rnnmodel import StackedBiRNN
 from utils import to_tensor
@@ -25,6 +26,7 @@ def main():
     hidden_dim = 128
     num_layers = 2
     dropout = 0.5
+    batch_size = 64
 
     # Load Training Data
     print("Loading training data...")
@@ -37,12 +39,12 @@ def main():
     random.shuffle(indices)
     split_index = int(0.8 * len(texts))
     train_indices = indices[:split_index]
-    dev_indices   = indices[split_index:]
+    dev_indices = indices[split_index:]
 
     train_texts = [texts[i] for i in train_indices]
     train_labels = [labels[i] for i in train_indices]
-    dev_texts   = [texts[i] for i in dev_indices]
-    dev_labels  = [labels[i] for i in dev_indices]
+    dev_texts = [texts[i] for i in dev_indices]
+    dev_labels = [labels[i] for i in dev_indices]
 
     # Build Vocabulary
     vocab = build_vocabulary(train_texts, train_labels)
@@ -59,6 +61,12 @@ def main():
     X_dev = to_tensor(X_dev).long()
     y_dev = to_tensor(y_dev)
 
+    # Create DataLoaders for batching
+    train_dataset = TensorDataset(X_train, y_train)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    dev_dataset = TensorDataset(X_dev, y_dev)
+    dev_loader = DataLoader(dev_dataset, batch_size=batch_size)
+
     # Dummy embedding matrix (vocab_size, embedding_dim)
     embedding_matrix = np.random.rand(len(vocab), embedding_dim)
 
@@ -73,20 +81,32 @@ def main():
     # Training Loop
     for epoch in range(1, num_epochs + 1):
         model.train()
-        optimizer.zero_grad()
-        outputs = model(X_train)
-        loss = criterion(outputs, y_train)
-        loss.backward()
-        optimizer.step()
+        epoch_loss = 0.0
+        for batch_X, batch_y in train_loader:
+            batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+            optimizer.zero_grad()
+            outputs = model(batch_X)
+            loss = criterion(outputs, batch_y)
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss.item() * batch_X.size(0)
 
-        print(f"Epoch {epoch}/{num_epochs} - Loss: {loss.item():.4f}")
+        avg_loss = epoch_loss / len(train_dataset)
+        print(f"Epoch {epoch}/{num_epochs} - Loss: {avg_loss:.4f}")
 
         # Evaluate on Development Data
         model.eval()
+        correct = 0
+        total = 0
         with torch.no_grad():
-            outputs = model(X_dev)
-            _, preds = torch.max(outputs, dim=1)
-            accuracy = (preds == y_dev).float().mean().item() * 100
+            for batch_X, batch_y in dev_loader:
+                batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+                outputs = model(batch_X)
+                _, preds = torch.max(outputs, dim=1)
+                correct += (preds == batch_y).sum().item()
+                total += batch_y.size(0)
+
+        accuracy = correct / total * 100
         print(f"Dev Accuracy: {accuracy:.2f}%")
 
     # Save Model and Vocabulary
