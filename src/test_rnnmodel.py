@@ -42,7 +42,7 @@ def main():
     y_test = np.array(labels)
 
     # Convert to PyTorch Tensors and Move Data to GPU if available
-    X_test = to_tensor(X_test)
+    X_test = to_tensor(X_test).long()
     y_test = to_tensor(y_test)
 
     # Evaluate Model

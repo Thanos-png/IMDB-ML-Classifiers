@@ -55,9 +55,9 @@ def main():
     y_dev = np.array(dev_labels)
 
     # Convert to PyTorch Tensors and Move Data to GPU if available
-    X_train = to_tensor(X_train)
+    X_train = to_tensor(X_train).long()
     y_train = to_tensor(y_train)
-    X_dev = to_tensor(X_dev)
+    X_dev = to_tensor(X_dev).long()
     y_dev = to_tensor(y_dev)
 
     # Dummy embedding matrix (vocab_size, embedding_dim)
