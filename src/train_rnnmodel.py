@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from preprocess import load_imdb_data, build_vocabulary, vectorize_texts
-from rnn_model import StackedBiRNN
+from rnnmodel import StackedBiRNN
 from utils import to_tensor
 
 
