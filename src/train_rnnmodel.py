@@ -25,7 +25,6 @@ def main():
     hidden_dim = 128
     num_layers = 2
     dropout = 0.5
-    batch_size = 64
 
     # Load Training Data
     print("Loading training data...")

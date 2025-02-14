@@ -152,6 +152,7 @@ def main():
     if isinstance(y_test_np, torch.Tensor):
         y_test_np = y_test_np.cpu().numpy()
 
+    # Evaluate the Sklearn AdaBoost model
     sklearn_model.fit(X_test_np, y_test_np)
     sklearn_test_preds = sklearn_model.predict(X_test_np)
     sklearn_acc = np.mean(sklearn_test_preds == y_test_np)

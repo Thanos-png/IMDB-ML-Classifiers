@@ -139,13 +139,6 @@ def main():
                     )
                     sklearn_model.fit(X_train.cpu().numpy(), y_train.cpu().numpy())
 
-                    # Save Sklearn AdaBoost Model
-                    results_dir = os.path.join('..', 'results')
-                    sklearn_model_path = os.path.join(results_dir, 'sklearn_adaboost.pkl')
-                    with open(sklearn_model_path, 'wb') as f:
-                        pickle.dump(sklearn_model, f)
-                    print(f"Sklearn AdaBoost model saved to {sklearn_model_path}")
-
                     # Evaluate on the Development Set
                     sklearn_dev_preds = sklearn_model.predict(X_dev.cpu().numpy())
                     sklearn_dev_acc = np.mean(sklearn_dev_preds == y_dev.cpu().numpy())
@@ -155,7 +148,8 @@ def main():
                         best_acc = dev_acc
                         best_params = {'T': T, 'm': m, 'n_most': n_most, 'k_rarest': k_rarest}
 
-                        # Save the Model and Vocabulary
+                        # Save Custom AdaBoost Model and Vocabulary
+                        results_dir = os.path.join('..', 'results')
                         os.makedirs(results_dir, exist_ok=True)
                         model_path = os.path.join(results_dir, 'adaboost_model.pkl')
                         vocab_path = os.path.join(results_dir, 'vocab.pkl')
@@ -164,6 +158,12 @@ def main():
                         with open(vocab_path, 'wb') as f:
                             pickle.dump(vocab, f)
                         print(f"Model and vocabulary saved to {model_path} and {vocab_path}")
+
+                        # Save Sklearn AdaBoost Model
+                        sklearn_model_path = os.path.join(results_dir, 'sklearn_adaboost.pkl')
+                        with open(sklearn_model_path, 'wb') as f:
+                            pickle.dump(sklearn_model, f)
+                        print(f"Sklearn AdaBoost model saved to {sklearn_model_path}")
 
                         # Learning Curve Experiment
                         # We will train models on increasing fractions of the training data and evaluate
