@@ -1,5 +1,6 @@
 import os
 import random
+import pickle
 import numpy as np
 import torch
 import torch.nn as nn
@@ -7,6 +8,13 @@ import torch.optim as optim
 from preprocess import load_imdb_data, build_vocabulary, vectorize_texts
 from rnn_model import StackedBiRNN
 from utils import to_tensor
+
+
+# For reproducibility
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
 
 
 def main():
@@ -81,6 +89,16 @@ def main():
             _, preds = torch.max(outputs, dim=1)
             accuracy = (preds == y_dev).float().mean().item() * 100
         print(f"Dev Accuracy: {accuracy:.2f}%")
+
+    # Save Model and Vocabulary
+    results_dir = os.path.join('..', 'results')
+    os.makedirs(results_dir, exist_ok=True)
+    model_path = os.path.join(results_dir, 'rnn_model.pth')
+    vocab_path = os.path.join(results_dir, 'vocab.pkl')
+    torch.save(model.state_dict(), model_path)
+    with open(vocab_path, 'wb') as f:
+        pickle.dump(vocab, f)
+    print(f"Model and vocabulary saved to {model_path} and {vocab_path}")
 
 
 if __name__ == "__main__":
