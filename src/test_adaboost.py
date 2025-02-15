@@ -40,8 +40,8 @@ def plot_test_results_A(categories, precision, recall, f1):
     # Save the plot
     plots_dir = os.path.join('..', 'results', 'plots')
     os.makedirs(plots_dir, exist_ok=True)
-    plt.savefig(os.path.join(plots_dir, 'test-1.png'))
-    print(f"Plot saved at {os.path.join(plots_dir, 'test-1.png')}")
+    plt.savefig(os.path.join(plots_dir, 'test_adaboost_1.png'))
+    print(f"Plot saved at {os.path.join(plots_dir, 'test_adaboost_1.png')}")
 
     plt.show()
 
@@ -74,8 +74,8 @@ def plot_test_results_B(categories, prec_values, rec_values, f1_values, sklearn_
     # Save the plot
     plots_dir = os.path.join('..', 'results', 'plots')
     os.makedirs(plots_dir, exist_ok=True)
-    plt.savefig(os.path.join(plots_dir, 'test-2.png'))
-    print(f"Plot saved at {os.path.join(plots_dir, 'test-2.png')}")
+    plt.savefig(os.path.join(plots_dir, 'test_adaboost_2.png'))
+    print(f"Plot saved at {os.path.join(plots_dir, 'test_adaboost_2.png')}")
 
     plt.show()
 
@@ -109,8 +109,8 @@ def main():
     print(f"Test Accuracy: {test_acc * 100:.2f}%")
 
     # Compute Evaluation Metrics for Each Class
-    prec_pos, rec_pos, f1_pos = compute_class_metrics_torch(y_test, preds, 1)
-    prec_neg, rec_neg, f1_neg = compute_class_metrics_torch(y_test, preds, -1)
+    prec_pos, rec_pos, f1_pos = compute_metrics_for_class_torch(y_test, preds, 1)
+    prec_neg, rec_neg, f1_neg = compute_metrics_for_class_torch(y_test, preds, -1)
 
     # Compute True Positives, False Positives, and False Negatives for Each Class
     tp_pos = torch.sum((y_test == 1) & (preds == 1)).item()
@@ -156,8 +156,8 @@ def main():
     sklearn_test_preds = sklearn_model.predict(X_test_np)
     sklearn_acc = np.mean(sklearn_test_preds == y_test_np)
     print(f"Sklearn AdaBoost Test Accuracy: {sklearn_acc * 100:.2f}%")
-    sklearn_prec_pos, sklearn_rec_pos, sklearn_f1_pos = compute_class_metrics_sklearn(y_test_np, sklearn_test_preds, 1)
-    sklearn_prec_neg, sklearn_rec_neg, sklearn_f1_neg = compute_class_metrics_sklearn(y_test_np, sklearn_test_preds, -1)
+    sklearn_prec_pos, sklearn_rec_pos, sklearn_f1_pos = compute_metrics_for_class_sklearn(y_test_np, sklearn_test_preds, 1)
+    sklearn_prec_neg, sklearn_rec_neg, sklearn_f1_neg = compute_metrics_for_class_sklearn(y_test_np, sklearn_test_preds, -1)
 
     # Print Detailed Evaluation Tables (B)
     print("\nCustom AdaBoost Test Evaluation Metrics:")
@@ -191,7 +191,7 @@ def main():
     sklearn_f1s = [sklearn_f1_pos, sklearn_f1_neg]
 
     # Plot the results
-    # plot_test_results_A(categories, prec_values, rec_values, f1_values)
+    plot_test_results_A(categories, prec_values, rec_values, f1_values)
     plot_test_results_B(categories, prec_values, rec_values, f1_values, sklearn_precs, sklearn_recs, sklearn_f1s)
 
 

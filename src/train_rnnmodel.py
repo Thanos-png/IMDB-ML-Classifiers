@@ -42,14 +42,18 @@ def numericalize_texts(texts, vocab, max_len=500):
 
 def main():
     # Hyperparameters
-    num_epochs = 10
     lr = 0.001  # Learning rate
-    embedding_dim = 300
-    hidden_dim = 128
-    num_layers = 2
-    dropout = 0.5
-    batch_size = 64
+    embedding_dim_values = [300]  # Dimension of the pre-trained word embeddings
+    hidden_dim_values = [128]  # Hidden dimension of the RNN
+    num_layers_values = [2]  # Number of stacked RNN layers
+    dropout_values = [0.5]  # Dropout probability
+    num_epochs_values = [10]  # Number of epochs
+
+    batch_size = 64  # Number of examples per batch
     max_seq_len = 500  # Maximum sequence length for the RNN
+
+    best_acc = 0
+    best_params = {}
 
     # Load Training Data
     print("Loading training data...")
@@ -94,58 +98,74 @@ def main():
     dev_dataset = TensorDataset(X_dev, y_dev)
     dev_loader = DataLoader(dev_dataset, batch_size=batch_size)
 
-    # Dummy embedding matrix (vocab_size, embedding_dim)
-    embedding_matrix = np.random.rand(len(vocab), embedding_dim)
+    # Try Different Hyperparameter Combinations
+    for embedding_dim in embedding_dim_values:
+        for hidden_dim in hidden_dim_values:
+            for num_layers in num_layers_values:
+                for dropout in dropout_values:
+                    # Embedding matrix (vocab_size, embedding_dim)
+                    embedding_matrix = np.random.rand(len(vocab), embedding_dim)
 
-    # Instantiate the model
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = StackedBiRNN(embedding_matrix, hidden_dim, num_layers, dropout, num_classes=2)
-    model.to(device)
+                    # Instantiate the model
+                    device = "cuda" if torch.cuda.is_available() else "cpu"
+                    model = StackedBiRNN(embedding_matrix, hidden_dim, num_layers, dropout, num_classes=2)
+                    model.to(device)
 
-    # Define the optimizer and loss function
-    optimizer = optim.Adam(model.parameters(), lr=lr)
-    criterion = nn.CrossEntropyLoss()
+                    # Define the optimizer and loss function
+                    optimizer = optim.Adam(model.parameters(), lr=lr)
+                    criterion = nn.CrossEntropyLoss()
 
-    # Training Loop
-    for epoch in range(1, num_epochs + 1):
-        model.train()
-        epoch_loss = 0.0
-        for batch_X, batch_y in train_loader:
-            batch_X, batch_y = batch_X.to(device), batch_y.to(device)
-            optimizer.zero_grad()
-            outputs = model(batch_X)
-            loss = criterion(outputs, batch_y)
-            loss.backward()
-            optimizer.step()
-            epoch_loss += loss.item() * batch_X.size(0)
+                    # Try Different num_epochs Combinations
+                    for num_epochs in num_epochs_values:
+                        print(f"\n--- Training with embedding_dim={embedding_dim}, hidden_dim={hidden_dim}, num_layers={num_layers}, dropout={dropout}, num_epochs={num_epochs} ---")
 
-        avg_loss = epoch_loss / len(train_dataset)
-        print(f"Epoch {epoch}/{num_epochs} - Loss: {avg_loss:.4f}")
+                        # Training Loop
+                        for epoch in range(1, num_epochs + 1):
+                            model.train()
+                            epoch_loss = 0.0
+                            for batch_X, batch_y in train_loader:
+                                batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+                                optimizer.zero_grad()
+                                outputs = model(batch_X)
+                                loss = criterion(outputs, batch_y)
+                                loss.backward()
+                                optimizer.step()
+                                epoch_loss += loss.item() * batch_X.size(0)
 
-        # Evaluate on Development Data
-        model.eval()
-        correct = 0
-        total = 0
-        with torch.no_grad():
-            for batch_X, batch_y in dev_loader:
-                batch_X, batch_y = batch_X.to(device), batch_y.to(device)
-                outputs = model(batch_X)
-                _, preds = torch.max(outputs, dim=1)
-                correct += (preds == batch_y).sum().item()
-                total += batch_y.size(0)
+                            avg_loss = epoch_loss / len(train_dataset)
+                            print(f"Epoch {epoch}/{num_epochs} - Loss: {avg_loss:.4f}")
 
-        accuracy = correct / total * 100
-        print(f"Dev Accuracy: {accuracy:.2f}%")
+                            # Evaluate on Development Data
+                            model.eval()
+                            correct = 0
+                            total = 0
+                            with torch.no_grad():
+                                for batch_X, batch_y in dev_loader:
+                                    batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+                                    outputs = model(batch_X)
+                                    _, preds = torch.max(outputs, dim=1)
+                                    correct += (preds == batch_y).sum().item()
+                                    total += batch_y.size(0)
 
-    # Save Model and Vocabulary
-    results_dir = os.path.join('..', 'results')
-    os.makedirs(results_dir, exist_ok=True)
-    model_path = os.path.join(results_dir, 'rnn_model.pth')
-    vocab_path = os.path.join(results_dir, 'vocab.pkl')
-    torch.save(model.state_dict(), model_path)
-    with open(vocab_path, 'wb') as f:
-        pickle.dump(vocab, f)
-    print(f"Model and vocabulary saved to {model_path} and {vocab_path}")
+                            dev_acc = correct / total * 100
+                            print(f"Dev Accuracy: {dev_acc:.2f}%")
+
+                            if (dev_acc > best_acc):
+                                best_acc = dev_acc
+                                best_params = {'embedding_dim': embedding_dim, 'hidden_dim': hidden_dim, 'num_layers': num_layers, 'dropout': dropout, 'num_epochs': num_epochs}
+
+                                # Save Model and Vocabulary
+                                results_dir = os.path.join('..', 'results')
+                                os.makedirs(results_dir, exist_ok=True)
+                                model_path = os.path.join(results_dir, 'rnn_model.pth')
+                                vocab_path = os.path.join(results_dir, 'rnn_vocab.pkl')
+                                torch.save(model.state_dict(), model_path)
+                                with open(vocab_path, 'wb') as f:
+                                    pickle.dump(vocab, f)
+                                print(f"\nRNN Model and vocabulary saved to {model_path} and {vocab_path}")
+
+    print("\n--- Best Hyperparameters ---")
+    print(best_params)
 
 
 if __name__ == "__main__":

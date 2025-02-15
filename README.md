@@ -59,9 +59,12 @@ Vectorizing texts...
 Training AdaBoost classifier...
 (Iterations)
 Development Accuracy: 82.60%
+
 Training Sklearn AdaBoost classifier...
 Sklearn AdaBoost Dev Accuracy: 80.90%
-Model and vocabulary saved to ../results/adaboost_model.pkl and ../results/vocab.pkl
+
+Custom Model and vocabulary saved to ../results/adaboost_model.pkl and ../results/vocab.pkl
+Sklearn AdaBoost model saved to ../results/sklearn_adaboost.pkl
 
 Running learning curve experiment (evaluating for positive class)...
 (Table)
@@ -87,7 +90,7 @@ Loaded 25000 test examples.
 Test Accuracy: 82.37%
 
 Loaded trained Sklearn AdaBoost model from ../results/sklearn_adaboost.pkl
-Sklearn AdaBoost Test Accuracy: 81.59%
+Sklearn AdaBoost Test Accuracy: 80.77%
 
 Custom AdaBoost Test Evaluation Metrics:
 Category   Precision  Recall     F1        
@@ -96,14 +99,49 @@ Negative   0.8390     0.8012     0.8197
 
 Sklearn AdaBoost Test Evaluation Metrics:
 Category   Precision  Recall     F1        
-Positive   0.8002     0.8420     0.8206    
-Negative   0.8333     0.7898     0.8109    
+Positive   0.7875     0.8428     0.8142    
+Negative   0.8309     0.7726     0.8007    
 
 Custom AdaBoost Micro-averaged: Precision: 0.8237, Recall: 0.8237, F1: 0.8237
 Custom AdaBoost Macro-averaged: Precision: 0.8244, Recall: 0.8237, F1: 0.8236
 
-Sklearn AdaBoost Micro-averaged: Precision: 0.8159, Recall: 0.8159, F1: 0.8159
-Sklearn AdaBoost Macro-averaged: Precision: 0.8167, Recall: 0.8159, F1: 0.8158
+Sklearn AdaBoost Micro-averaged: Precision: 0.8077, Recall: 0.8077, F1: 0.8077
+Sklearn AdaBoost Macro-averaged: Precision: 0.8092, Recall: 0.8077, F1: 0.8075
+```
+
+### Train the Stacked Bidirectional RNN with GRU cells Model
+```
+cd src/
+python train_rnnmodel.py
+```
+#### This will:
+- Load and preprocess the IMDB dataset.
+- Construct a **vocabulary** by removing frequent/rare words and selecting words based on **information gain**.
+- Convert reviews into **binary feature vectors**.
+- Train an **AdaBoost classifier** with **T=200** boosting iterations.
+
+#### Hyperparameters used:
+| Parameter       | Value | Description                                  |
+| --------------- | ----- | -------------------------------------------- |
+| `embedding_dim` | `300` | Dimension of the pre-trained word embeddings |
+| `hidden_dim`    | `128` | Hidden dimension of the RNN                  |
+| `num_layers`    | `2`   | Number of stacked RNN layers                 |
+| `dropout`       | `0.5` | Dropout probability                          |
+| `num_epochs`    | `10`  | Number of epochs                             |
+
+#### Expected output:
+```
+Loading training data...
+Loaded 25000 training examples.
+
+--- Training with embedding_dim=300, hidden_dim=128, num_layers=2, dropout=0.5, num_epochs=10 ---
+(Iterations)
+Dev Accuracy: 81.88%
+
+RNN Model and vocabulary saved to ../results/rnn_model.pth and ../results/vocab.pkl
+
+--- Best Hyperparameters ---
+{'embedding_dim': 300, 'hidden_dim': 128, 'num_layers': 2, 'dropout': 0.5, 'num_epochs': 10}
 ```
 
 ## 🛠️ Key Implementations
