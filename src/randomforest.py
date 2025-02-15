@@ -2,51 +2,57 @@ import numpy as np
 import math
 import torch
 from typing import Optional
-from statistics import mode
-from id3 import ID3
+from scipy.stats import mode
+from sklearn.tree import DecisionTreeClassifier
+from utils import to_tensor
 
 
-def randomforest_train(X: np.ndarray, y: np.ndarray, n_estimators: int=100, m:int = None) -> list[ID3]:
+def randomforest_train(X: np.ndarray, y: np.ndarray, n_estimators: int=100, m_features:int = None,max_depth:int=None) -> list[tuple[DecisionTreeClassifier, np.ndarray]]:
     """
-    Trains an Random Forest classifier for n_estimators trees.
-    Every tree is made using ID3 algorithm
+    Trains a Random Forest classifier for n_estimators trees.
     """
+    X_tensor = to_tensor(X)
+    y_tensor = to_tensor(y)
+    
+    n_samples, n_features = X_tensor.shape
+    forest = []  # Stores (tree, selected features) pairs
 
-    # `X` is a binary feature matrix of shape (n_texts, len(vocab))
-    n_samples, n_features = X.shape
-    forest: list[ID3] = []  # A list of trained decision trees created with ID3 algorithm
+    if m_features is None:
+        m_features = int(math.sqrt(n_features))
 
-    if m is None:
-        m = int(math.sqrt(n_features))  # Use sqrt of total features if not specified
-
-    for i in range(n_estimators):
+    for _ in range(n_estimators):
         # Bagging
-        inds = np.random.choice(n_samples,size=n_samples,replace=True)
-        X_sample, y_sample = X[inds], y[inds]
+        inds = np.random.choice(n_samples, size=n_samples, replace=True)
+        X_sample, y_sample = X_tensor[inds], y_tensor[inds]
 
-        # Random subset of m features
-        sample_features = np.random.choice(n_features, m, replace=False)
+        # Select random subset of m_features
+        sample_features = np.random.choice(np.arange(n_features), m_features, replace=False)
 
-        # ID3 tree training
-        tree = ID3(sample_features)
-        tree.fit(X_sample,y_sample)
-        forest.append(tree)
+        # DecisionTree train
+        tree = DecisionTreeClassifier(criterion="entropy", max_depth=max_depth, max_features=None)
+        X_sample_np = X_sample.cpu().numpy()
+        tree.fit(X_sample_np[:, sample_features], y_sample.cpu().numpy())
+
+        forest.append((tree, sample_features))
 
     return forest
 
 
-def randomforest_predict(X: np.ndarray, forest: list[ID3]) -> np.ndarray:
+
+def randomforest_predict(X: np.ndarray, forest: list[tuple[DecisionTreeClassifier, np.ndarray]]) -> np.ndarray:
     """It makes predictions on X by combining the votes of a trained Random Forest model"""
 
+    X_tensor = to_tensor(X)
+    X_np = X_tensor.cpu().numpy()
+
     preds_list = []
-    for tree in forest:
-        pred = tree.predict(X)
+    for tree, sample_features in forest:
+        pred = tree.predict(X_np[:, sample_features])  # Use selected features
         preds_list.append(pred)
+
     preds = np.array(preds_list)
-    majority_preds_list = []
-    for pred in preds.T:  # Transpose, pred is for each sample, not tree
-        majority_preds_list.append(mode(pred))  # Mode function returns the most common value
 
-    majority_preds = np.array(majority_preds_list)
+    # Majority voting
+    majority_preds = mode(preds, axis=0)[0].flatten()
 
-    return majority_preds
+    return to_tensor(majority_preds)
