@@ -19,7 +19,7 @@ def main():
     # Load the Saved Model and Vocabulary
     results_dir = os.path.join('..', 'results')
     model_path = os.path.join(results_dir, 'rnn_model.pth')
-    vocab_path = os.path.join(results_dir, 'vocab.pkl')
+    vocab_path = os.path.join(results_dir, 'rnn_vocab.pkl')
 
     with open(vocab_path, 'rb') as f:
         vocab = pickle.load(f)
