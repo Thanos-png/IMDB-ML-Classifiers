@@ -3,6 +3,7 @@ import random
 import numpy as np
 import pickle
 import torch
+import datetime
 import matplotlib.pyplot as plt
 from preprocess import load_imdb_data, build_vocabulary, vectorize_texts
 from randomforest import randomforest_train, randomforest_predict
@@ -10,7 +11,8 @@ from utils import to_tensor, compute_metrics_for_class_sklearn, compute_metrics_
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score, recall_score, f1_score
-
+import warnings
+warnings.filterwarnings("ignore")
 
 # For reproducibility
 SEED = 42
@@ -46,12 +48,10 @@ def plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec
     plt.savefig(os.path.join(plots_dir, 'train_1_RF.png'))
     print(f"Plot saved at {os.path.join(plots_dir, 'train_1_RF.png')}")
 
-    plt.show()
-
 
 def plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklearn_dev_f1):
     """
-    Plots F1-score learning curves for both Custom and Sklearn AdaBoost.
+    Plots F1-score learning curves for both Custom and Sklearn Random Forest.
     Same as AdaBoost only change is the file name.
     """
 
@@ -62,7 +62,7 @@ def plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklea
     plt.plot(train_sizes, sklearn_dev_f1, marker='v', linestyle='--', label="Sklearn Dev F1", color='orange')
     plt.xlabel("Training Set Size")
     plt.ylabel("F1 Score")
-    plt.title("Learning Curve: Custom vs Sklearn AdaBoost (Positive Class)")
+    plt.title("Learning Curve: Custom vs Sklearn Random Forest(Positive Class)")
     plt.legend()
     plt.grid(True)
 
@@ -72,15 +72,15 @@ def plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklea
     plt.savefig(os.path.join(plots_dir, 'train_2_RF.png'))
     print(f"Plot saved at {os.path.join(plots_dir, 'train_2_RF')}")
 
-    plt.show()
-
 
 def main():
+    start_time = datetime.datetime.now()
+    print("Start time:", start_time,"\n")
     # Hyperparameters
-    n_estimators_values = [10, 50, 100, 150]  # Number of trees in the forest
-    m_values = [1000, 2000, 3000, 4000, 5000, 10000]  # Vocabulary size
-    n_most_values = [20, 50, 70]  # Most frequent words removed
-    k_rarest_values = [20, 50, 70]  # Rarest words removed
+    n_estimators_values = [700]  # Number of trees in the forest - Checked [10,50,150,200,300,400,500,,700,800,900]
+    m_values = [5000]  # Vocabulary size - Checked [1000,2000,3000,4000,5000,7000,10000]
+    n_most_values = [50]  # Most frequent words removed - Checked [20,50,100]
+    k_rarest_values = [50]  # Rarest words removed - Checked [20,50,100]
 
     best_acc = 0
     best_params = {}
@@ -104,22 +104,22 @@ def main():
     dev_labels = [labels[i] for i in dev_indices]
 
     # Try Different Hyperparameter Combinations
-    for n_estimators in n_estimators_values:
+    for k_rarest in k_rarest_values:
         for m in m_values:
             for n_most in n_most_values:
-                for k_rarest in k_rarest_values:
+                # Build Vocabulary from Training Data
+                print("Building vocabulary...")
+                vocab = build_vocabulary(train_texts, train_labels, n_most=n_most, k_rarest=k_rarest, m=m)
+
+                # Vectorize Texts
+                print("Vectorizing texts...")
+                X_train = vectorize_texts(train_texts, vocab)
+                X_dev = vectorize_texts(dev_texts, vocab)
+                y_train = np.array(train_labels)
+                y_dev = np.array(dev_labels)
+                
+                for n_estimators in n_estimators_values:
                     print(f"\n--- Training with n_estimators={n_estimators}, m={m}, n_most={n_most}, k_rarest={k_rarest} ---")
-
-                    # Build Vocabulary from Training Data
-                    print("Building vocabulary...")
-                    vocab = build_vocabulary(train_texts, train_labels, n_most=n_most, k_rarest=k_rarest, m=m)
-
-                    # Vectorize Texts
-                    print("Vectorizing texts...")
-                    X_train = vectorize_texts(train_texts, vocab)
-                    X_dev = vectorize_texts(dev_texts, vocab)
-                    y_train = np.array(train_labels)
-                    y_dev = np.array(dev_labels)
 
                     # Convert to PyTorch Tensors
                     X_train = to_tensor(X_train)
@@ -138,22 +138,16 @@ def main():
                     print(f"Development Accuracy: {dev_acc * 100:.2f}%")
 
                     # Train Sklearn Random Forest
-                    print("\nTraining Sklearn AdaBoost classifier...")
+                    print("\nTraining Sklearn Random Forest classifier...")
                     sklearn_model = RandomForestClassifier(
                         n_estimators=n_estimators, 
                         max_features='sqrt',
-                        criterion="entropy",  # ID3 uses entropy as splitting criterion
-                        bootstrap=True,  # Ensure Bagging is used
+                        criterion="entropy",  # ID3 uses entropy as criterion
+                        bootstrap=True,  # Use Bagging
                         random_state=SEED
                     )
                     sklearn_model.fit(X_train.cpu().numpy(), y_train.cpu().numpy())
 
-                    # Save Sklearn Random Forest Model
-                    results_dir = os.path.join('..', 'results')
-                    sklearn_model_path = os.path.join(results_dir, 'sklearn_randomforest.pkl')
-                    with open(sklearn_model_path, 'wb') as f:
-                        pickle.dump(sklearn_model, f)
-                    print(f"Sklearn Random Forest model saved to {sklearn_model_path}")
 
                     # Evaluate on the Development Set
                     sklearn_dev_preds = sklearn_model.predict(X_dev.cpu().numpy())
@@ -165,11 +159,18 @@ def main():
                         best_acc = dev_acc
                         best_params = {'n_estimators': n_estimators, 'm': m, 'n_most': n_most, 'k_rarest': k_rarest}
 
+                        # Save Sklearn Random Forest Model
+                        results_dir = os.path.join('..', 'results')
+                        sklearn_model_path = os.path.join(results_dir, 'sklearn_randomforest.pkl')
+                        with open(sklearn_model_path, 'wb') as f:
+                            pickle.dump(sklearn_model, f)
+                        print(f"Sklearn Random Forest model saved to {sklearn_model_path}")
+
                         # Save the Model and Vocabulary
                         results_dir = os.path.join('..', 'results')
                         os.makedirs(results_dir, exist_ok=True)
                         model_path = os.path.join(results_dir, 'randomforest_model.pkl')
-                        vocab_path = os.path.join(results_dir, 'vocab.pkl')
+                        vocab_path = os.path.join(results_dir, 'vocab_RF.pkl')
                         with open(model_path, 'wb') as f:
                             pickle.dump(forest, f)
                         with open(vocab_path, 'wb') as f:
@@ -184,10 +185,10 @@ def main():
                         sklearn_train_f1, sklearn_dev_f1 = [], []
                         
                         # Print header for Part A
-                        # print("{:<10} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15}".format("Size", "Train Prec", "Train Rec", "Train F1", "Dev Prec", "Dev Rec", "Dev F1"))
+                        print("{:<10} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15}".format("Size", "Train Prec", "Train Rec", "Train F1", "Dev Prec", "Dev Rec", "Dev F1"))
 
                         # Print header for Part B
-                        #print("{:<10} {:<20} {:<20} {:<20} {:<20}".format("Size", "Custom Train F1", "Custom Dev F1", "Sklearn Train F1", "Sklearn Dev F1"))
+                        print("{:<10} {:<20} {:<20} {:<20} {:<20}".format("Size", "Custom Train F1", "Custom Dev F1", "Sklearn Train F1", "Sklearn Dev F1"))
 
                         # For reproducibility, we use the first N examples of the (already shuffled) training data.
                         for frac in fractions:
@@ -221,10 +222,10 @@ def main():
                             prec_dev_sklearn, rec_dev_sklearn, f1_dev_sklearn = compute_metrics_for_class_sklearn(y_dev.cpu().numpy(), sklearn_dev_preds_subset, target=1)
 
                             # Print results for Part A
-                            # print("{:<10} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f}".format(subset_size, prec_train, rec_train, f1_train, prec_dev, rec_dev, f1_dev))
+                            print("{:<10} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f}".format(subset_size, prec_train, rec_train, f1_train, prec_dev, rec_dev, f1_dev))
 
                             # Print results for Part B
-                            #print("{:<10} {:<20.4f} {:<20.4f} {:<20.4f} {:<20.4f}".format(subset_size, f1_train, f1_dev, f1_train_sklearn, f1_dev_sklearn))
+                            print("{:<10} {:<20.4f} {:<20.4f} {:<20.4f} {:<20.4f}".format(subset_size, f1_train, f1_dev, f1_train_sklearn, f1_dev_sklearn))
 
                             train_sizes.append(subset_size)
                             train_prec.append(prec_train)
@@ -242,6 +243,10 @@ def main():
 
     print("\n--- Best Hyperparameters ---")
     print(best_params)
+    end_time = datetime.datetime.now()
+    print("Duration:",end_time-start_time)
+    print("\nEnd time:", end_time)
+
 
 
 if __name__ == "__main__":
