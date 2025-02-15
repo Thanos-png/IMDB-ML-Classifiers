@@ -90,12 +90,12 @@ def main():
     random.shuffle(indices)
     split_index = int(0.8 * len(texts))
     train_indices = indices[:split_index]
-    dev_indices   = indices[split_index:]
+    dev_indices = indices[split_index:]
 
     train_texts = [texts[i] for i in train_indices]
     train_labels = [labels[i] for i in train_indices]
-    dev_texts   = [texts[i] for i in dev_indices]
-    dev_labels  = [labels[i] for i in dev_indices]
+    dev_texts = [texts[i] for i in dev_indices]
+    dev_labels = [labels[i] for i in dev_indices]
 
     # Try Different Hyperparameter Combinations
     for T in T_values:

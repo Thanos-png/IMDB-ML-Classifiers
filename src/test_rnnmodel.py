@@ -43,7 +43,7 @@ def main():
 
     # Convert to PyTorch Tensors and Move Data to GPU if available
     X_test = to_tensor(X_test).long()
-    y_test = to_tensor(y_test)
+    y_test = to_tensor(y_test).long()
 
     # Evaluate Model
     with torch.no_grad():

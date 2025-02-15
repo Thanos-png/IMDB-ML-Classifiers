@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import TensorDataset, DataLoader
-from preprocess import load_imdb_data, build_vocabulary, vectorize_texts
+from preprocess import load_imdb_data, build_vocabulary, tokenize
 from rnnmodel import StackedBiRNN
 from utils import to_tensor
 
@@ -18,6 +18,28 @@ np.random.seed(SEED)
 torch.manual_seed(SEED)
 
 
+def numericalize_texts(texts, vocab, max_len=500):
+    """
+    Convert texts into sequences of token indices and pad/truncate to max_len.
+    Args:
+      texts: list of raw text strings.
+      vocab: dict mapping token -> index.
+      max_len: maximum sequence length.
+    Returns:
+      A numpy array of shape (num_texts, max_len) with token indices.
+    """
+    sequences = []
+    for text in texts:
+        tokens = tokenize(text)  # make sure tokenize is imported from preprocess.py
+        # Convert tokens to indices; use 0 for unknown tokens.
+        seq = [vocab.get(token, 0) for token in tokens]
+        seq = seq[:max_len]
+        if len(seq) < max_len:
+            seq += [0] * (max_len - len(seq))
+        sequences.append(seq)
+    return np.array(sequences)
+
+
 def main():
     # Hyperparameters
     num_epochs = 10
@@ -27,6 +49,7 @@ def main():
     num_layers = 2
     dropout = 0.5
     batch_size = 64
+    max_seq_len = 500  # Maximum sequence length for the RNN
 
     # Load Training Data
     print("Loading training data...")
@@ -49,9 +72,9 @@ def main():
     # Build Vocabulary
     vocab = build_vocabulary(train_texts, train_labels)
 
-    # Vectorize Texts
-    X_train = vectorize_texts(train_texts, vocab)
-    X_dev = vectorize_texts(dev_texts, vocab)
+    # Create sequences
+    X_train = numericalize_texts(train_texts, vocab, max_len=max_seq_len)
+    X_dev = numericalize_texts(dev_texts, vocab, max_len=max_seq_len)
     y_train = np.array(train_labels)
     y_dev = np.array(dev_labels)
 
