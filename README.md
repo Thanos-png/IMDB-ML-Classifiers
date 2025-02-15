@@ -1,6 +1,6 @@
-# AdaBoost for Text Classification (IMDB Dataset)
+# Text Classification Using AdaBoost, Random Forest, and RNNs (IMDB Dataset)
 
-This project implements an **AdaBoost**, **Random Forest** and **Stacked Bidirectional RNN with GRU cells** classifiers to classify movie reviews into **positive** or **negative** opinions. The dataset used is the **Large Movie Review Dataset (IMDB Dataset)**.
+This project implements an **AdaBoost** and a **Random Forest** model as well as a **Stacked Bidirectional RNN with GRU cells** classifiers to classify movie reviews into **positive** or **negative** opinions. The dataset used is the **Large Movie Review Dataset (IMDB Dataset)**.
 
 ## 🚀 Project Overview
 

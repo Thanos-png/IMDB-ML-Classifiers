@@ -74,8 +74,10 @@ def plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklea
 
 
 def main():
+    # Start time
     start_time = datetime.datetime.now()
     print("Start time:", start_time,"\n")
+
     # Hyperparameters
     n_estimators_values = [700]  # Number of trees in the forest - Checked [10,50,150,200,300,400,500,,700,800,900]
     m_values = [5000]  # Vocabulary size - Checked [1000,2000,3000,4000,5000,7000,10000]
@@ -243,6 +245,8 @@ def main():
 
     print("\n--- Best Hyperparameters ---")
     print(best_params)
+
+    # End time
     end_time = datetime.datetime.now()
     print("Duration:",end_time-start_time)
     print("\nEnd time:", end_time)

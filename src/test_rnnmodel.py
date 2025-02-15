@@ -24,7 +24,7 @@ def main():
     with open(vocab_path, 'rb') as f:
         vocab = pickle.load(f)
 
-    # Dummy embedding matrix (assumes same vocab size as training)
+    # Embedding matrix (assumes same vocab size as training)
     embedding_matrix = np.random.rand(len(vocab), 300)
 
     # Instantiate model

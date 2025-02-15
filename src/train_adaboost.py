@@ -152,7 +152,7 @@ def main():
                         results_dir = os.path.join('..', 'results')
                         os.makedirs(results_dir, exist_ok=True)
                         model_path = os.path.join(results_dir, 'adaboost_model.pkl')
-                        vocab_path = os.path.join(results_dir, 'vocab.pkl')
+                        vocab_path = os.path.join(results_dir, 'vocab_adaboost.pkl')
                         with open(model_path, 'wb') as f:
                             pickle.dump(stumps, f)
                         with open(vocab_path, 'wb') as f:
@@ -227,7 +227,7 @@ def main():
                             sklearn_dev_f1.append(f1_dev_sklearn)
 
                         # Plot learning curve
-                        # plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec, dev_rec, dev_f1)
+                        plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec, dev_rec, dev_f1)
                         plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklearn_dev_f1)
 
     print("\n--- Best Hyperparameters ---")

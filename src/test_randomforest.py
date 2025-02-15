@@ -17,11 +17,12 @@ random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
 
-def plot_test_results_A(categories, precision, recall, f1):
-    """Plots precision, recall, and F1-score for test evaluation.
-       Same as AdaBoost, changes only the name of the savefiles
-    """
 
+def plot_test_results_A(categories, precision, recall, f1):
+    """
+    Plots precision, recall, and F1-score for test evaluation.
+    Same as AdaBoost, changes only the name of the savefiles
+    """
     x = np.arange(len(categories))
     width = 0.25
     
@@ -45,10 +46,10 @@ def plot_test_results_A(categories, precision, recall, f1):
 
 
 def plot_test_results_B(categories, prec_values, rec_values, f1_values, sklearn_precs, sklearn_recs, sklearn_f1s):
-    """Plots bar charts of precision, recall, and F1 for test evaluation for both implementations.
-       Same as AdaBoost, changes only the name of the savefiles
     """
-
+    Plots bar charts of precision, recall, and F1 for test evaluation for both implementations.
+    Same as AdaBoost, changes only the name of the savefiles
+    """
     x = np.arange(len(categories))
     width = 0.14
 

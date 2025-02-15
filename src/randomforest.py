@@ -8,9 +8,8 @@ from utils import to_tensor
 
 
 def randomforest_train(X: np.ndarray, y: np.ndarray, n_estimators: int=100, m_features:int = None,max_depth:int=None) -> list[tuple[DecisionTreeClassifier, np.ndarray]]:
-    """
-    Trains a Random Forest classifier for n_estimators trees.
-    """
+    """Trains a Random Forest classifier for n_estimators trees."""
+
     X_tensor = to_tensor(X)
     y_tensor = to_tensor(y)
     
@@ -40,7 +39,7 @@ def randomforest_train(X: np.ndarray, y: np.ndarray, n_estimators: int=100, m_fe
 
 
 def randomforest_predict(X: np.ndarray, forest: list[tuple[DecisionTreeClassifier, np.ndarray]]) -> np.ndarray:
-    """It makes predictions on X by combining the votes of a trained Random Forest model"""
+    """It makes predictions on X by combining the votes of a trained Random Forest model."""
 
     X_tensor = to_tensor(X)
     X_np = X_tensor.cpu().numpy()
