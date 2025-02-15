@@ -7,7 +7,8 @@ from typing import Optional
 class DecisionStump:
     """
     A decision stump that classifies based on one binary feature.
-    For binary features (0/1), we use a fixed threshold (0.5). The prediction is:
+    For binary features (0/1), we use a fixed threshold (0.5).
+    The prediction is:
     if x[feature_index] >= threshold: predict = polarity
     else: predict = -polarity
     """

@@ -19,16 +19,9 @@ np.random.seed(SEED)
 torch.manual_seed(SEED)
 
 
-def numericalize_texts(texts, vocab, max_len=500):
-    """
-    Convert texts into sequences of token indices and pad/truncate to max_len.
-    Args:
-      texts: list of raw text strings.
-      vocab: dict mapping token -> index.
-      max_len: maximum sequence length.
-    Returns:
-      A numpy array of shape (num_texts, max_len) with token indices.
-    """
+def numericalize_texts(texts: list[str], vocab: dict[str, int], max_len: int = 500) -> np.ndarray:
+    """Convert texts into sequences of token indices and pad/truncate to max_len."""
+
     sequences = []
     for text in texts:
         tokens = tokenize(text)  # make sure tokenize is imported from preprocess.py
@@ -153,7 +146,7 @@ def main():
                                     outputs = model(batch_X)
                                     loss_dev = criterion(outputs, batch_y)
                                     dev_epoch_loss += loss_dev.item() * batch_X.size(0)
-                                    _, preds = torch.max(outputs, dim=1)
+                                    max_values, preds = torch.max(outputs, dim=1)
                                     correct += (preds == batch_y).sum().item()
                                     total += batch_y.size(0)
 
@@ -176,7 +169,12 @@ def main():
                                     pickle.dump(vocab, f)
                                 print(f"\nRNN Model and vocabulary saved to {model_path} and {vocab_path}")
 
-                        # Plot training and development loss curves for this hyperparameter configuration
+                        # Create the results/plots directory if it doesn't exist
+                        plots_dir = os.path.join('..', 'results', 'plots')
+                        os.makedirs(plots_dir, exist_ok=True)
+                        plot_path = os.path.join(plots_dir, "train_rnnmodel.png")
+
+                        # Plot training and development loss curves
                         plt.figure(figsize=(10, 6))
                         plt.plot(range(1, epochs+1), train_loss_history, label='Train Loss', marker='o')
                         plt.plot(range(1, epochs+1), dev_loss_history, label='Dev Loss', marker='s')
@@ -185,6 +183,8 @@ def main():
                         plt.title(f'Loss Curves (embedding_dim={embedding_dim}, hidden_dim={hidden_dim}, num_layers={num_layers}, dropout={dropout})')
                         plt.legend()
                         plt.grid(True)
+                        plt.savefig(plot_path)
+                        print(f"Plot saved at {plot_path}")
                         plt.show()
 
     print("\n--- Best Hyperparameters ---")

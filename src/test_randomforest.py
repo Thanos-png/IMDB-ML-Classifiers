@@ -19,18 +19,16 @@ torch.manual_seed(SEED)
 
 
 def plot_test_results_A(categories, precision, recall, f1):
-    """
-    Plots precision, recall, and F1-score for test evaluation.
-    Same as AdaBoost, changes only the name of the savefiles
-    """
+    """Plots precision, recall, and F1-score for test evaluation."""
+
     x = np.arange(len(categories))
     width = 0.25
-    
+
     plt.figure(figsize=(8, 5))
     plt.bar(x - width, precision, width, label='Precision', color='blue')
     plt.bar(x, recall, width, label='Recall', color='green')
     plt.bar(x + width, f1, width, label='F1-score', color='red')
-    
+
     plt.xlabel("Categories")
     plt.ylabel("Score")
     plt.title("Test Evaluation Metrics")
@@ -43,13 +41,12 @@ def plot_test_results_A(categories, precision, recall, f1):
     os.makedirs(plots_dir, exist_ok=True)
     plt.savefig(os.path.join(plots_dir, 'test_1_RF.png'))
     print(f"Plot saved at {os.path.join(plots_dir, 'test_1_RF.png')}")
+    plt.show()
 
 
 def plot_test_results_B(categories, prec_values, rec_values, f1_values, sklearn_precs, sklearn_recs, sklearn_f1s):
-    """
-    Plots bar charts of precision, recall, and F1 for test evaluation for both implementations.
-    Same as AdaBoost, changes only the name of the savefiles
-    """
+    """Plots bar charts of precision, recall, and F1 for test evaluation for both implementations."""
+
     x = np.arange(len(categories))
     width = 0.14
 
@@ -77,6 +74,7 @@ def plot_test_results_B(categories, prec_values, rec_values, f1_values, sklearn_
     os.makedirs(plots_dir, exist_ok=True)
     plt.savefig(os.path.join(plots_dir, 'test_2_RF.png'))
     print(f"Plot saved at {os.path.join(plots_dir, 'test_2_RF.png')}")
+    plt.show()
 
     
 def main():
@@ -84,7 +82,7 @@ def main():
     results_dir = os.path.join('..', 'results')
     model_path = os.path.join(results_dir, 'randomforest_model.pkl')
     vocab_path = os.path.join(results_dir, 'vocab_RF.pkl')
-    
+
     with open(model_path, 'rb') as f:
         forest = pickle.load(f)
     with open(vocab_path, 'rb') as f:
@@ -95,7 +93,7 @@ def main():
     root = os.path.join("..", "data", "aclImdb")
     texts, labels = load_imdb_data(split='test', root=root)
     print(f"Loaded {len(texts)} test examples.")
-    
+
     X_test_np = vectorize_texts(texts, vocab)
     y_test_np = np.array(labels)
 
@@ -129,12 +127,12 @@ def main():
     micro_prec = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0.0
     micro_rec = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 0.0
     micro_f1 = 2 * micro_prec * micro_rec / (micro_prec + micro_rec) if (micro_prec + micro_rec) > 0 else 0.0
-    
+
     # Compute Macro-Averaged Metrics
     macro_prec = (prec_pos + prec_neg) / 2
     macro_rec = (rec_pos + rec_neg) / 2
     macro_f1 = (f1_pos + f1_neg) / 2
-    
+
     # Print the Evaluation Results (A)
     print("\nEvaluation Metrics on Test Data:")
     print("\nMicro-averaged: Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}".format(micro_prec, micro_rec, micro_f1))
@@ -155,7 +153,7 @@ def main():
     # Evaluate Sklearn Random Forest
     sklearn_test_preds = sklearn_model.predict(X_test_np)
     sklearn_acc = np.mean(sklearn_test_preds == y_test_np)
-    
+
     print(f"Sklearn AdaBoost Test Accuracy: {sklearn_acc * 100:.2f}%")
     sklearn_prec_pos, sklearn_rec_pos, sklearn_f1_pos = compute_metrics_for_class_sklearn(y_test_np, sklearn_test_preds, 1)
     sklearn_prec_neg, sklearn_rec_neg, sklearn_f1_neg = compute_metrics_for_class_sklearn(y_test_np, sklearn_test_preds, -1)

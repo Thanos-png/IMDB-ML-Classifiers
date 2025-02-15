@@ -7,6 +7,7 @@ from torch.utils.data import TensorDataset, DataLoader
 from preprocess import load_imdb_data, vectorize_texts
 from rnnmodel import StackedBiRNN
 from utils import to_tensor, compute_metrics_for_class_torch
+from train_rnnmodel import numericalize_texts
 
 
 # For reproducibility
@@ -39,7 +40,9 @@ def main():
     root = os.path.join("..", "data", "aclImdb")
     texts, labels = load_imdb_data(split='test', root=root)
     print(f"Loaded {len(texts)} test examples.")
-    X_test = vectorize_texts(texts, vocab)
+    
+    # Use numericalize_texts to convert texts to sequences
+    X_test = numericalize_texts(texts, vocab, max_len=500)
     y_test = np.array(labels)
 
     # Remap labels: -1 -> 0, 1 remains 1.
@@ -60,7 +63,7 @@ def main():
         for batch_X, batch_y in test_loader:
             batch_X, batch_y = batch_X.to(device), batch_y.to(device)
             outputs = model(batch_X)
-            _, preds = torch.max(outputs, dim=1)
+            max_values, preds = torch.max(outputs, dim=1)
             all_preds.append(preds.cpu().numpy())
             all_labels.append(batch_y.cpu().numpy())
             total_correct += (preds == batch_y).sum().item()
@@ -69,13 +72,13 @@ def main():
     test_acc = total_correct / total_samples * 100
     print(f"Test Accuracy: {test_acc:.2f}%")
 
-    # Concatenate predictions and true labels from all batches
+    #Concatenate predictions and true labels from all batches
     all_preds = np.concatenate(all_preds)
     all_labels = np.concatenate(all_labels)
 
     # Compute per-class metrics
     precision_pos, recall_pos, f1_pos = compute_metrics_for_class_torch(to_tensor(all_labels), to_tensor(all_preds), 1)
-    precision_neg, recall_neg, f1_neg = compute_metrics_for_class_torch(to_tensor(all_labels), to_tensor(all_preds), -1)
+    precision_neg, recall_neg, f1_neg = compute_metrics_for_class_torch(to_tensor(all_labels), to_tensor(all_preds), 0)
 
     # Compute True Positives, False Positives, and False Negatives for Each Class
     tp_pos = np.sum((all_labels == 1) & (all_preds == 1))

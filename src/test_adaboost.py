@@ -42,7 +42,6 @@ def plot_test_results_A(categories, precision, recall, f1):
     os.makedirs(plots_dir, exist_ok=True)
     plt.savefig(os.path.join(plots_dir, 'test_adaboost_1.png'))
     print(f"Plot saved at {os.path.join(plots_dir, 'test_adaboost_1.png')}")
-
     plt.show()
 
 
@@ -76,7 +75,6 @@ def plot_test_results_B(categories, prec_values, rec_values, f1_values, sklearn_
     os.makedirs(plots_dir, exist_ok=True)
     plt.savefig(os.path.join(plots_dir, 'test_adaboost_2.png'))
     print(f"Plot saved at {os.path.join(plots_dir, 'test_adaboost_2.png')}")
-
     plt.show()
 
 

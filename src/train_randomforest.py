@@ -22,20 +22,16 @@ torch.manual_seed(SEED)
 
 
 def plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec, dev_rec, dev_f1):
-    """
-    Plots precision, recall, and F1-score for train and dev sets as training size increases.
-    Same as AdaBoost only change is the file name.
-    """
+    """Plots precision, recall, and F1-score for train and dev sets as training size increases."""
 
     plt.figure(figsize=(10, 6))
-    
     plt.plot(train_sizes, train_f1, marker='o', linestyle='-', label="Train F1-score", color='blue')
     plt.plot(train_sizes, dev_f1, marker='s', linestyle='-', label="Dev F1-score", color='green')
     plt.plot(train_sizes, train_prec, marker='^', linestyle='-', label="Train Precision", color='red')
     plt.plot(train_sizes, dev_prec, marker='v', linestyle='-', label="Dev Precision", color='orange')
     plt.plot(train_sizes, train_rec, marker='d', linestyle='-', label="Train Recall", color='purple')
     plt.plot(train_sizes, dev_rec, marker='x', linestyle='-', label="Dev Recall", color='brown')
-    
+
     plt.xlabel("Training Set Size")
     plt.ylabel("Score")
     plt.title("Learning Curve: Train vs Dev Metrics")
@@ -50,10 +46,7 @@ def plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec
 
 
 def plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklearn_dev_f1):
-    """
-    Plots F1-score learning curves for both Custom and Sklearn Random Forest.
-    Same as AdaBoost only change is the file name.
-    """
+    """Plots F1-score learning curves for both Custom and Sklearn Random Forest."""
 
     plt.figure(figsize=(10, 6))
     plt.plot(train_sizes, train_f1, marker='o', linestyle='-', label="Custom Train F1", color='blue')
@@ -119,7 +112,7 @@ def main():
                 X_dev = vectorize_texts(dev_texts, vocab)
                 y_train = np.array(train_labels)
                 y_dev = np.array(dev_labels)
-                
+
                 for n_estimators in n_estimators_values:
                     print(f"\n--- Training with n_estimators={n_estimators}, m={m}, n_most={n_most}, k_rarest={k_rarest} ---")
 
@@ -149,7 +142,6 @@ def main():
                         random_state=SEED
                     )
                     sklearn_model.fit(X_train.cpu().numpy(), y_train.cpu().numpy())
-
 
                     # Evaluate on the Development Set
                     sklearn_dev_preds = sklearn_model.predict(X_dev.cpu().numpy())
@@ -185,9 +177,9 @@ def main():
                         train_sizes, train_prec, train_rec, train_f1 = [], [], [], []
                         dev_prec, dev_rec, dev_f1 = [], [], []
                         sklearn_train_f1, sklearn_dev_f1 = [], []
-                        
+
                         # Print header for Part A
-                        print("{:<10} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15}".format("Size", "Train Prec", "Train Rec", "Train F1", "Dev Prec", "Dev Rec", "Dev F1"))
+                        # print("{:<10} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15}".format("Size", "Train Prec", "Train Rec", "Train F1", "Dev Prec", "Dev Rec", "Dev F1"))
 
                         # Print header for Part B
                         print("{:<10} {:<20} {:<20} {:<20} {:<20}".format("Size", "Custom Train F1", "Custom Dev F1", "Sklearn Train F1", "Sklearn Dev F1"))
@@ -224,7 +216,7 @@ def main():
                             prec_dev_sklearn, rec_dev_sklearn, f1_dev_sklearn = compute_metrics_for_class_sklearn(y_dev.cpu().numpy(), sklearn_dev_preds_subset, target=1)
 
                             # Print results for Part A
-                            print("{:<10} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f}".format(subset_size, prec_train, rec_train, f1_train, prec_dev, rec_dev, f1_dev))
+                            # print("{:<10} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f} {:<15.4f}".format(subset_size, prec_train, rec_train, f1_train, prec_dev, rec_dev, f1_dev))
 
                             # Print results for Part B
                             print("{:<10} {:<20.4f} {:<20.4f} {:<20.4f} {:<20.4f}".format(subset_size, f1_train, f1_dev, f1_train_sklearn, f1_dev_sklearn))
@@ -250,7 +242,6 @@ def main():
     end_time = datetime.datetime.now()
     print("Duration:",end_time-start_time)
     print("\nEnd time:", end_time)
-
 
 
 if __name__ == "__main__":

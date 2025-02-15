@@ -79,9 +79,12 @@ cd src/
 python test_adaboost.py
 ```
 #### This will:
-- Load the **trained model** and **vocabulary**.
+- Load the **trained adaboost model** and **vocabulary**.
 - Convert **test reviews** into **binary feature vectors**.
 - Make predictions and compute **test accuracy**.
+- Evaluate both **custom AdaBoost and Sklearn’s AdaBoost** models.
+- Compute and display **precision, recall, and F1-score** for **positive and negative** sentiment classes.
+- Report **micro- and macro-averaged** evaluation metrics for both models. 
 
 #### Expected output:
 ```
@@ -109,16 +112,17 @@ Sklearn AdaBoost Micro-averaged: Precision: 0.8077, Recall: 0.8077, F1: 0.8077
 Sklearn AdaBoost Macro-averaged: Precision: 0.8092, Recall: 0.8077, F1: 0.8075
 ```
 
-### Train the Stacked Bidirectional RNN with GRU cells Model
+### Train the Stacked Bidirectional RNN Model
 ```
 cd src/
 python train_rnnmodel.py
 ```
 #### This will:
 - Load and preprocess the IMDB dataset.
-- Construct a **vocabulary** by removing frequent/rare words and selecting words based on **information gain**.
-- Convert reviews into **binary feature vectors**.
-- Train an **AdaBoost classifier** with **T=200** boosting iterations.
+- Construct a **vocabulary** and convert reviews into **sequences of token indices**.
+- Use **pre-trained word embeddings** to initialize the embedding layer.
+- Train a **Stacked Bidirectional RNN with GRU cells** using **Adam optimizer**.
+- Monitor **training and development loss** across epochs.
 
 #### Hyperparameters used:
 | Parameter       | Value | Description                                  |
@@ -144,6 +148,34 @@ RNN Model and vocabulary saved to ../results/rnn_model.pth and ../results/vocab.
 {'embedding_dim': 300, 'hidden_dim': 128, 'num_layers': 2, 'dropout': 0.5, 'num_epochs': 10}
 ```
 
+### Test the Model
+```
+cd src/
+python test_rnnmodel.py
+```
+#### This will:
+- Load the **saved RNN model** and **vocabulary**.
+- Preprocess the **IMDB test dataset**, converting reviews into **sequences of token indices**.
+- Evaluate the model on **test data** using **mini-batches** to prevent memory issues.
+- Compute and display **test accuracy**.
+- Calculate **precision, recall, and F1-score** for both **positive and negative** sentiment classes.
+- Report **micro- and macro-averaged** evaluation metrics.
+
+#### Expected output:
+```
+Loading test data...
+Loaded 25000 test examples.
+Test Accuracy: 82.90%
+
+Evaluation Metrics on Test Data:
+Category   Precision  Recall     F1        
+Positive   0.8024     0.8731     0.8363    
+Negative   0.8609     0.7850     0.8212    
+
+Micro-averaged: Precision: 0.8290, Recall: 0.8290, F1: 0.8290
+Macro-averaged: Precision: 0.8316, Recall: 0.8290, F1: 0.8287
+```
+
 ## 🛠️ Key Implementations
 ### Text Preprocessing (Binary Feature Representation)
 - **Tokenization**: Splitting text into words.
@@ -157,6 +189,13 @@ RNN Model and vocabulary saved to ../results/rnn_model.pth and ../results/vocab.
 - Uses **decision stumps** as weak learners.
 - Each weak learner classifies reviews based on the presence/absence of a single word.
 - Weighted voting of multiple weak learners improves accuracy.
+
+### Stacked Bidirectional RNN Implementation
+- Uses a **Stacked Bidirectional GRU** network for sequential text classification.
+- Each review is represented as a **sequence of token indices**, processed using **pre-trained word embeddings**.
+- The **GRU layers** capture contextual dependencies in both forward and backward directions.
+- A **global max pooling layer** extracts the most important features from the hidden states.
+- The final classification is performed using a **fully connected layer with softmax activation**.
 
 ## 📈 Results & Analysis
 ### Custom adaboost metrics
@@ -183,3 +222,5 @@ RNN Model and vocabulary saved to ../results/rnn_model.pth and ../results/vocab.
 
 ## 🏆 Credits & Acknowledgements
 - IMDB Dataset: [Stanford AI Lab](https://ai.stanford.edu/~amaas/data/sentiment/)
+
+##### Note: This project has been tested with Python 3.12 but should work with other 3.x versions.
