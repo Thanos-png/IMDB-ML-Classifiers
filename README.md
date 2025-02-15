@@ -17,8 +17,8 @@ This project implements an **AdaBoost** and a **Random Forest** model as well as
 ## Installation
 Clone this repository:
 ```
-git clone https://github.com/Thanos-png/AdaboostTextClassifier.git
-cd AdaboostTextClassifier
+git clone https://github.com/Thanos-png/IMDB-ML-Classifiers.git
+cd IMDB-ML-Classifiers
 pip install -r requirements.txt
 ```
 

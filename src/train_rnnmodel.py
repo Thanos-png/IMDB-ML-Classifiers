@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import TensorDataset, DataLoader
+import matplotlib.pyplot as plt
 from preprocess import load_imdb_data, build_vocabulary, tokenize
 from rnnmodel import StackedBiRNN
 from utils import to_tensor
@@ -115,6 +116,11 @@ def main():
                     optimizer = optim.Adam(model.parameters(), lr=lr)
                     criterion = nn.CrossEntropyLoss()
 
+                    # For plotting loss curves
+                    train_loss_history = []
+                    dev_loss_history = []
+                    epochs = num_epochs_values[0]  # Only one value in our list
+
                     # Try Different num_epochs Combinations
                     for num_epochs in num_epochs_values:
                         print(f"\n--- Training with embedding_dim={embedding_dim}, hidden_dim={hidden_dim}, num_layers={num_layers}, dropout={dropout}, num_epochs={num_epochs} ---")
@@ -132,21 +138,27 @@ def main():
                                 optimizer.step()
                                 epoch_loss += loss.item() * batch_X.size(0)
 
-                            avg_loss = epoch_loss / len(train_dataset)
-                            print(f"Epoch {epoch}/{num_epochs} - Loss: {avg_loss:.4f}")
+                            avg_train_loss = epoch_loss / len(train_dataset)
+                            train_loss_history.append(avg_train_loss)
+                            print(f"Epoch {epoch}/{num_epochs} - Loss: {avg_train_loss:.4f}")
 
                             # Evaluate on Development Data
                             model.eval()
+                            dev_epoch_loss = 0.0
                             correct = 0
                             total = 0
                             with torch.no_grad():
                                 for batch_X, batch_y in dev_loader:
                                     batch_X, batch_y = batch_X.to(device), batch_y.to(device)
                                     outputs = model(batch_X)
+                                    loss_dev = criterion(outputs, batch_y)
+                                    dev_epoch_loss += loss_dev.item() * batch_X.size(0)
                                     _, preds = torch.max(outputs, dim=1)
                                     correct += (preds == batch_y).sum().item()
                                     total += batch_y.size(0)
 
+                            avg_dev_loss = dev_epoch_loss / len(dev_dataset)
+                            dev_loss_history.append(avg_dev_loss)
                             dev_acc = correct / total * 100
                             print(f"Dev Accuracy: {dev_acc:.2f}%")
 
@@ -163,6 +175,17 @@ def main():
                                 with open(vocab_path, 'wb') as f:
                                     pickle.dump(vocab, f)
                                 print(f"\nRNN Model and vocabulary saved to {model_path} and {vocab_path}")
+
+                        # Plot training and development loss curves for this hyperparameter configuration
+                        plt.figure(figsize=(10, 6))
+                        plt.plot(range(1, epochs+1), train_loss_history, label='Train Loss', marker='o')
+                        plt.plot(range(1, epochs+1), dev_loss_history, label='Dev Loss', marker='s')
+                        plt.xlabel('Epoch')
+                        plt.ylabel('Loss')
+                        plt.title(f'Loss Curves (embedding_dim={embedding_dim}, hidden_dim={hidden_dim}, num_layers={num_layers}, dropout={dropout})')
+                        plt.legend()
+                        plt.grid(True)
+                        plt.show()
 
     print("\n--- Best Hyperparameters ---")
     print(best_params)
