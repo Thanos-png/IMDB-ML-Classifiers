@@ -55,11 +55,15 @@ def main():
     y_train = np.array(train_labels)
     y_dev = np.array(dev_labels)
 
+    # Remap labels: -1 -> 0, 1 stays 1.
+    y_train = np.where(np.array(train_labels) == -1, 0, 1)
+    y_dev = np.where(np.array(dev_labels) == -1, 0, 1)
+
     # Convert to PyTorch Tensors and Move Data to GPU if available
     X_train = to_tensor(X_train).long()
-    y_train = to_tensor(y_train)
+    y_train = to_tensor(y_train).long()
     X_dev = to_tensor(X_dev).long()
-    y_dev = to_tensor(y_dev)
+    y_dev = to_tensor(y_dev).long()
 
     # Create DataLoaders for batching
     train_dataset = TensorDataset(X_train, y_train)
