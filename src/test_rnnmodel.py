@@ -30,7 +30,7 @@ def main():
 
     # Instantiate model
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = StackedBiRNN(embedding_matrix, hidden_dim=128, num_layers=2, dropout=0.5, num_classes=2)
+    model = StackedBiRNN(embedding_matrix, hidden_dim=256, num_layers=2, dropout=0.2, num_classes=2)
     model.load_state_dict(torch.load(model_path, weights_only=True))
     model.to(device)
     model.eval()

@@ -125,27 +125,28 @@ python train_rnnmodel.py
 - Monitor **training and development loss** across epochs.
 
 #### Hyperparameters used:
-| Parameter       | Value | Description                                  |
-| --------------- | ----- | -------------------------------------------- |
-| `embedding_dim` | `300` | Dimension of the pre-trained word embeddings |
-| `hidden_dim`    | `128` | Hidden dimension of the RNN                  |
-| `num_layers`    | `2`   | Number of stacked RNN layers                 |
-| `dropout`       | `0.5` | Dropout probability                          |
-| `num_epochs`    | `10`  | Number of epochs                             |
+| Parameter       | Value  | Description                                  |
+| --------------- | ------ | -------------------------------------------- |
+| `embedding_dim` | `300`  | Dimension of the pre-trained word embeddings |
+| `hidden_dim`    | `256`  | Hidden dimension of the RNN                  |
+| `num_layers`    | `2`    | Number of stacked RNN layers                 |
+| `dropout`       | `0.2`  | Dropout probability                          |
+| `num_epochs`    | `10`   | Number of epochs                             |
+| `lr`            |`0.0002`| Learning rate                                |
 
 #### Expected output:
 ```
 Loading training data...
 Loaded 25000 training examples.
 
---- Training with embedding_dim=300, hidden_dim=128, num_layers=2, dropout=0.5, num_epochs=10 ---
+--- Training with embedding_dim=300, hidden_dim=256, num_layers=2, dropout=0.2, lr=0.0002, num_epochs=10 ---
 (Iterations)
-Dev Accuracy: 81.88%
+Dev Accuracy: 87.00%
 
 RNN Model and vocabulary saved to ../results/rnn_model.pth and ../results/vocab.pkl
 
 --- Best Hyperparameters ---
-{'embedding_dim': 300, 'hidden_dim': 128, 'num_layers': 2, 'dropout': 0.5, 'num_epochs': 10}
+{'embedding_dim': 300, 'hidden_dim': 256, 'num_layers': 2, 'dropout': 0.2, 'lr': 0.0002, 'num_epochs': 10}
 ```
 
 ### Test the Model
@@ -165,15 +166,15 @@ python test_rnnmodel.py
 ```
 Loading test data...
 Loaded 25000 test examples.
-Test Accuracy: 82.90%
+Test Accuracy: 86.91%
 
 Evaluation Metrics on Test Data:
 Category   Precision  Recall     F1        
-Positive   0.8024     0.8731     0.8363    
-Negative   0.8609     0.7850     0.8212    
+Positive   0.8686     0.8698     0.8692    
+Negative   0.8697     0.8684     0.8690    
 
-Micro-averaged: Precision: 0.8290, Recall: 0.8290, F1: 0.8290
-Macro-averaged: Precision: 0.8316, Recall: 0.8290, F1: 0.8287
+Micro-averaged: Precision: 0.8691, Recall: 0.8691, F1: 0.8691
+Macro-averaged: Precision: 0.8691, Recall: 0.8691, F1: 0.8691
 ```
 
 ## 🛠️ Key Implementations

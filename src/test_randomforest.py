@@ -154,7 +154,7 @@ def main():
     sklearn_test_preds = sklearn_model.predict(X_test_np)
     sklearn_acc = np.mean(sklearn_test_preds == y_test_np)
 
-    print(f"Sklearn AdaBoost Test Accuracy: {sklearn_acc * 100:.2f}%")
+    print(f"Sklearn Random Forest Test Accuracy: {sklearn_acc * 100:.2f}%")
     sklearn_prec_pos, sklearn_rec_pos, sklearn_f1_pos = compute_metrics_for_class_sklearn(y_test_np, sklearn_test_preds, 1)
     sklearn_prec_neg, sklearn_rec_neg, sklearn_f1_neg = compute_metrics_for_class_sklearn(y_test_np, sklearn_test_preds, -1)
 

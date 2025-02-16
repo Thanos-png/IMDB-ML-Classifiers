@@ -43,6 +43,7 @@ def plot_learning_curve_A(train_sizes, train_prec, train_rec, train_f1, dev_prec
     os.makedirs(plots_dir, exist_ok=True)
     plt.savefig(os.path.join(plots_dir, 'train_1_RF.png'))
     print(f"Plot saved at {os.path.join(plots_dir, 'train_1_RF.png')}")
+    plt.show()
 
 
 def plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklearn_dev_f1):
@@ -64,6 +65,7 @@ def plot_learning_curve_B(train_sizes, train_f1, dev_f1, sklearn_train_f1, sklea
     os.makedirs(plots_dir, exist_ok=True)
     plt.savefig(os.path.join(plots_dir, 'train_2_RF.png'))
     print(f"Plot saved at {os.path.join(plots_dir, 'train_2_RF')}")
+    plt.show()
 
 
 def main():
@@ -72,7 +74,7 @@ def main():
     print("Start time:", start_time,"\n")
 
     # Hyperparameters
-    n_estimators_values = [700]  # Number of trees in the forest - Checked [10,50,150,200,300,400,500,,700,800,900]
+    n_estimators_values = [700]  # Number of trees in the forest - Checked [10,50,150,200,300,400,500,700,800,900]
     m_values = [5000]  # Vocabulary size - Checked [1000,2000,3000,4000,5000,7000,10000]
     n_most_values = [50]  # Most frequent words removed - Checked [20,50,100]
     k_rarest_values = [50]  # Rarest words removed - Checked [20,50,100]

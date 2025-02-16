@@ -19,7 +19,7 @@ def randomforest_train(X: np.ndarray, y: np.ndarray, n_estimators: int=100, m_fe
     if m_features is None:
         m_features = int(math.sqrt(n_features))
 
-    for _ in range(n_estimators):
+    for i in range(n_estimators):
         # Bagging
         inds = np.random.choice(n_samples, size=n_samples, replace=True)
         X_sample, y_sample = X_tensor[inds], y_tensor[inds]

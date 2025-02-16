@@ -38,15 +38,14 @@ def main():
     # Hyperparameters
     embedding_dim_values = [300]  # Dimension of the pre-trained word embeddings
     hidden_dim_values = [256]  # Hidden dimension of the RNN
-    num_layers_values = [3, 4]  # Number of stacked RNN layers
-    dropout_values = [0.2, 0.3]  # Dropout probability
-    lr_values = [0.0001]  # Learning rate
-    num_epochs_values = [15]  # Number of epochs
+    num_layers_values = [2]  # Number of stacked RNN layers
+    dropout_values = [0.2]  # Dropout probability
+    lr_values = [0.0002]  # Learning rate
+    num_epochs_values = [10]  # Number of epochs
 
     batch_size = 64  # Number of examples per batch
     max_seq_len = 500  # Maximum sequence length for the RNN
 
-    i = 0
     best_acc = 0
     best_params = {}
 
@@ -113,7 +112,7 @@ def main():
 
                         # Try Different num_epochs Combinations
                         for num_epochs in num_epochs_values:
-                            print(f"\n--- Training with embedding_dim={embedding_dim}, hidden_dim={hidden_dim}, num_layers={num_layers}, dropout={dropout}, num_epochs={num_epochs}, lr={lr} ---")
+                            print(f"\n--- Training with embedding_dim={embedding_dim}, hidden_dim={hidden_dim}, num_layers={num_layers}, dropout={dropout}, lr={lr}, num_epochs={num_epochs} ---")
 
                             # For plotting loss curves
                             train_loss_history = []
@@ -174,8 +173,7 @@ def main():
                             # Create the results/plots directory if it doesn't exist
                             plots_dir = os.path.join('..', 'results', 'plots')
                             os.makedirs(plots_dir, exist_ok=True)
-                            plot_path = os.path.join(plots_dir, f"train_rnnmodel_{i}.png")
-                            i += 1
+                            plot_path = os.path.join(plots_dir, f"train_rnnmodel.png")
 
                             # Plot training and development loss curves
                             plt.figure(figsize=(10, 6))
@@ -188,7 +186,7 @@ def main():
                             plt.grid(True)
                             plt.savefig(plot_path)
                             print(f"Plot saved at {plot_path}")
-                            # plt.show()
+                            plt.show()
 
     print("\n--- Best Hyperparameters ---")
     print(best_params)
