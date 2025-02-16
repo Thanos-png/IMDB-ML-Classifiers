@@ -36,12 +36,12 @@ def numericalize_texts(texts: list[str], vocab: dict[str, int], max_len: int = 5
 
 def main():
     # Hyperparameters
-    embedding_dim_values = [300, 400]  # Dimension of the pre-trained word embeddings
-    hidden_dim_values = [256, 512]  # Hidden dimension of the RNN
-    num_layers_values = [2, 3, 4]  # Number of stacked RNN layers
+    embedding_dim_values = [300]  # Dimension of the pre-trained word embeddings
+    hidden_dim_values = [256]  # Hidden dimension of the RNN
+    num_layers_values = [3, 4]  # Number of stacked RNN layers
     dropout_values = [0.2, 0.3]  # Dropout probability
-    lr_values = [0.0001, 0.0002, 0.0005]  # Learning rate
-    num_epochs_values = [10, 15]  # Number of epochs
+    lr_values = [0.0001]  # Learning rate
+    num_epochs_values = [15]  # Number of epochs
 
     batch_size = 64  # Number of examples per batch
     max_seq_len = 500  # Maximum sequence length for the RNN
@@ -111,13 +111,13 @@ def main():
                         optimizer = optim.Adam(model.parameters(), lr=lr)
                         criterion = nn.CrossEntropyLoss()
 
-                        # For plotting loss curves
-                        train_loss_history = []
-                        dev_loss_history = []
-
                         # Try Different num_epochs Combinations
                         for num_epochs in num_epochs_values:
                             print(f"\n--- Training with embedding_dim={embedding_dim}, hidden_dim={hidden_dim}, num_layers={num_layers}, dropout={dropout}, num_epochs={num_epochs}, lr={lr} ---")
+
+                            # For plotting loss curves
+                            train_loss_history = []
+                            dev_loss_history = []
 
                             # Training Loop
                             for epoch in range(1, num_epochs + 1):
@@ -134,7 +134,7 @@ def main():
 
                                 avg_train_loss = epoch_loss / len(train_dataset)
                                 train_loss_history.append(avg_train_loss)
-                                print(f"Epoch {epoch}/{num_epochs} - Loss: {avg_train_loss:.4f}")
+                                print(f"Epoch {epoch}/{num_epochs} - Train Loss: {avg_train_loss:.4f}")
 
                                 # Evaluate on Development Data
                                 model.eval()
@@ -154,6 +154,7 @@ def main():
                                 avg_dev_loss = dev_epoch_loss / len(dev_dataset)
                                 dev_loss_history.append(avg_dev_loss)
                                 dev_acc = correct / total * 100
+                                print(f"Dev Loss: {avg_dev_loss:.4f}")
                                 print(f"Dev Accuracy: {dev_acc:.2f}%")
 
                                 if (dev_acc > best_acc):
