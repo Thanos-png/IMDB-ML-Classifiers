@@ -2,7 +2,7 @@
 
 This project implements an **AdaBoost** and a **Random Forest** model as well as a **Stacked Bidirectional RNN with GRU cells** classifiers to classify movie reviews into **positive** or **negative** opinions. The dataset used is the **Large Movie Review Dataset (IMDB Dataset)**.
 
-## 🚀 Project Overview
+## Project Overview
 
 ### **Objective**
 - Represent text as **binary feature vectors**, where each feature corresponds to the presence (`1`) or absence (`0`) of a word in the review.
@@ -177,7 +177,7 @@ Micro-averaged: Precision: 0.8691, Recall: 0.8691, F1: 0.8691
 Macro-averaged: Precision: 0.8691, Recall: 0.8691, F1: 0.8691
 ```
 
-## 🛠️ Key Implementations
+## Key Implementations
 ### Text Preprocessing (Binary Feature Representation)
 - **Tokenization**: Splitting text into words.
 - **Vocabulary Selection**:
@@ -198,7 +198,7 @@ Macro-averaged: Precision: 0.8691, Recall: 0.8691, F1: 0.8691
 - A **global max pooling layer** extracts the most important features from the hidden states.
 - The final classification is performed using a **fully connected layer with softmax activation**.
 
-## 📈 Results & Analysis
+## Results & Analysis
 ### Custom adaboost metrics
 | Size  | Train Prec | Train Rec | Train F1 | Dev Prec | Dev Rec | Dev F1 |
 | ----- | ---------- | --------- | -------- | -------- | ------- | ------ |
@@ -221,7 +221,7 @@ Macro-averaged: Precision: 0.8691, Recall: 0.8691, F1: 0.8691
 
 #### The visualizations are stored in the `results/plots` directory.
 
-## 🏆 Credits & Acknowledgements
+## Credits & Acknowledgements
 - IMDB Dataset: [Stanford AI Lab](https://ai.stanford.edu/~amaas/data/sentiment/)
 
 ##### Note: This project has been tested with Python 3.12 but should work with other 3.x versions.
