@@ -16,21 +16,21 @@ This project implements an **AdaBoost** and a **Random Forest** model as well as
 
 ## Installation
 Clone this repository:
-```
+```bash
 git clone https://github.com/Thanos-png/IMDB-ML-Classifiers.git
 cd IMDB-ML-Classifiers
 pip install -r requirements.txt
 ```
 
 ### Ensure GPU is Available
-```
+```bash
 python -c "import torch; print(torch.cuda.is_available())"
 ```
 If `True` your GPU is ready.If `False` check your CUDA installation or the CPU will be used automatically.
 
 ## Running the Project
 ### Train the AdaBoost Model
-```
+```bash
 cd src/
 python train_adaboost.py
 ```
@@ -74,7 +74,7 @@ Running learning curve experiment (evaluating for positive class)...
 ```
 
 ### Test the Model
-```
+```bash
 cd src/
 python test_adaboost.py
 ```
@@ -113,7 +113,7 @@ Sklearn AdaBoost Macro-averaged: Precision: 0.8092, Recall: 0.8077, F1: 0.8075
 ```
 
 ### Train the Stacked Bidirectional RNN Model
-```
+```bash
 cd src/
 python train_rnnmodel.py
 ```
@@ -150,7 +150,7 @@ RNN Model and vocabulary saved to ../results/rnn_model.pth and ../results/vocab.
 ```
 
 ### Test the Model
-```
+```bash
 cd src/
 python test_rnnmodel.py
 ```
