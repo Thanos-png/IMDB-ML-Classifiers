@@ -14,11 +14,18 @@ This project implements an **AdaBoost** and a **Random Forest** model as well as
 - [Stanford AI IMDB Dataset](https://ai.stanford.edu/~amaas/data/sentiment/)
 - [PyTorch IMDB Dataset](https://pytorch.org/text/stable/datasets.html#imdb)
 
-## Installation
+## Getting Started
+
+### Installation
 Clone this repository:
 ```bash
 git clone https://github.com/Thanos-png/IMDB-ML-Classifiers.git
 cd IMDB-ML-Classifiers
+```
+
+### Requirements
+Install dependencies:
+```bash
 pip install -r requirements.txt
 ```
 
@@ -219,7 +226,7 @@ Macro-averaged: Precision: 0.8691, Recall: 0.8691, F1: 0.8691
 | 16000 | 0.8320          | 0.8189        | 0.8196           | 0.8115         |
 | 20000 | 0.8327          | 0.8272        | 0.8190           | 0.8132         |
 
-#### The visualizations are stored in the `results/plots` directory.
+#### The metrics visualizations are stored in the `results/plots` directory.
 
 ## Credits & Acknowledgements
 - IMDB Dataset: [Stanford AI Lab](https://ai.stanford.edu/~amaas/data/sentiment/)
