@@ -231,4 +231,6 @@ Macro-averaged: Precision: 0.8691, Recall: 0.8691, F1: 0.8691
 ## Credits & Acknowledgements
 - IMDB Dataset: [Stanford AI Lab](https://ai.stanford.edu/~amaas/data/sentiment/)
 
-##### Note: This project has been tested with Python 3.12 but should work with other 3.x versions.
+## Contact
+For questions or feedback, feel free to reach me out:
+* **Email:** thanos.panagiotidis@protonmail.com
